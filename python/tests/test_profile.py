@@ -3,9 +3,9 @@ import json
 import numpy as np
 import pandas as pd
 
-from lousa.io import read_table
-from lousa.jsonable import dumps
-from lousa.profile import column_kind, profile
+from giz.io import read_table
+from giz.jsonable import dumps
+from giz.profile import column_kind, profile
 
 
 def codes(p, column=None):
@@ -65,7 +65,7 @@ def test_histograma_correlacao_e_json_sem_nan():
 
 
 def test_numero_em_formato_brasileiro():
-    from lousa.jsonable import br
+    from giz.jsonable import br
 
     assert br(1234567) == "1.234.567"
     assert br(3.849, 1) == "3,8"

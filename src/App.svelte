@@ -23,7 +23,7 @@
     theme = dark ? "light" : "dark";
     document.documentElement.dataset.theme = theme;
     try {
-      localStorage.setItem("lousa-tema", theme);
+      localStorage.setItem("giz-tema", theme);
     } catch {
       /* modo privado */
     }
@@ -53,7 +53,7 @@
       <circle cx="25" cy="10" r="2.2" class="logo-dot" />
     </svg>
     <div>
-      <strong>Lousa</strong>
+      <strong>Giz</strong>
       <span class="tag">AutoML no navegador · open source</span>
     </div>
   </div>
@@ -147,10 +147,10 @@
 {/if}
 
 <footer class="foot small muted">
-  Lousa · alternativa open source ao SageMaker Canvas, feita por
+  Giz · alternativa open source ao SageMaker Canvas, feita por
   <a href="https://vgmelo.tech" rel="noopener">Victor Melo</a> · Python {app.pyReady ? "3.14 (Pyodide)" : ""} com pandas,
   scikit-learn, LightGBM e XGBoost ·
-  <a href="https://github.com/vicgamelo/lousa" rel="noopener">código</a>
+  <a href="https://github.com/vicgamelo/giz" rel="noopener">código</a>
 </footer>
 
 <style>

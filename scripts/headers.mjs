@@ -1,4 +1,4 @@
-// Cabeçalhos de produção da Lousa. O mesmo conjunto está no deploy/ml.Caddyfile (o teste confere).
+// Cabeçalhos de produção do Giz. O mesmo conjunto está no deploy/ml.Caddyfile (o teste confere).
 // - wasm-unsafe-eval: o Pyodide compila WebAssembly; nada de 'unsafe-eval' nem script inline.
 // - COOP/COEP: isolamento entre origens, para o botão Parar usar SharedArrayBuffer.
 // - connect-src: o próprio domínio (Pyodide e exemplos) e o portal, só para o MLflow.

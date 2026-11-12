@@ -6,7 +6,7 @@ import type { Request, WorkerMessage } from "./lib/protocol";
 
 declare const self: DedicatedWorkerGlobalScope;
 
-const sources = import.meta.glob("../python/lousa/*.py", { query: "?raw", import: "default", eager: true }) as Record<
+const sources = import.meta.glob("../python/giz/*.py", { query: "?raw", import: "default", eager: true }) as Record<
   string,
   string
 >;
@@ -33,12 +33,12 @@ async function boot() {
   py = (await loadPyodide({ indexURL: BASE, lockFileURL: `${BASE}pyodide-lock.json` })) as PyodideAPI;
   status("boot", "Carregando pandas…");
   await py.loadPackage(["numpy", "pandas", "python-calamine"], { messageCallback: () => {} });
-  py.FS.mkdirTree("/home/pyodide/lousa");
+  py.FS.mkdirTree("/home/pyodide/giz");
   for (const [path, code] of Object.entries(sources)) {
-    py.FS.writeFile(`/home/pyodide/lousa/${path.split("/").pop()}`, code);
+    py.FS.writeFile(`/home/pyodide/giz/${path.split("/").pop()}`, code);
   }
   py.runPython("import sys; sys.path.insert(0, '/home/pyodide')");
-  api = py.pyimport("lousa.api");
+  api = py.pyimport("giz.api");
   status("ready", "Python pronto", { seconds: (performance.now() - t0) / 1000 });
   mlReady = (async () => {
     status("ml", "Carregando scikit-learn, LightGBM e XGBoost em segundo plano…");

@@ -4,9 +4,9 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from lousa import automl, models
-from lousa.io import read_table
-from lousa.recipe import fit_recipe
+from giz import automl, models
+from giz.io import read_table
+from giz.recipe import fit_recipe
 
 
 def test_deteccao_do_problema():

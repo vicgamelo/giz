@@ -1,7 +1,7 @@
 [project]
-name = "lousa-engine"
+name = "giz-engine"
 version = "0.1.0"
-description = "Motor da Lousa: perfil, receita, AutoML e exportação. Roda no Pyodide e no CPython."
+description = "Motor do Giz: perfil, receita, AutoML e exportação. Roda no Pyodide e no CPython."
 requires-python = "==3.14.*"
 # Mesmas versões do Pyodide 314.0.7 (pyodide-lock.json), para o teste local valer para o navegador.
 dependencies = [

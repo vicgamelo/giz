@@ -13,7 +13,7 @@ export class Engine {
   onStatus: (stage: string, message: string, seconds?: number) => void = () => {};
 
   constructor() {
-    this.worker = new Worker(new URL("../worker.ts", import.meta.url), { type: "module", name: "lousa-python" });
+    this.worker = new Worker(new URL("../worker.ts", import.meta.url), { type: "module", name: "giz-python" });
     this.worker.onmessage = (ev: MessageEvent<WorkerMessage>) => this.receive(ev.data);
     this.worker.onerror = (ev) => this.onStatus("error", `O worker do Python caiu: ${ev.message}`);
     if (globalThis.crossOriginIsolated && typeof SharedArrayBuffer !== "undefined") {

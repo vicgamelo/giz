@@ -6,8 +6,8 @@
 
   type Kind = "script" | "notebook" | "recipe";
   const FILES: Record<Kind, { name: string; label: string; type: string }> = {
-    script: { name: "lousa_modelo.py", label: "Script Python", type: "text/x-python" },
-    notebook: { name: "lousa_modelo.ipynb", label: "Notebook Jupyter", type: "application/x-ipynb+json" },
+    script: { name: "giz_modelo.py", label: "Script Python", type: "text/x-python" },
+    notebook: { name: "giz_modelo.ipynb", label: "Notebook Jupyter", type: "application/x-ipynb+json" },
     recipe: { name: "receita.json", label: "Receita (JSON)", type: "application/json" },
   };
 

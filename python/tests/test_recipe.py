@@ -1,8 +1,8 @@
 import pandas as pd
 import pytest
 
-from lousa.io import read_table
-from lousa.recipe import RecipeError, apply_recipe, describe_step, fit_recipe
+from giz.io import read_table
+from giz.recipe import RecipeError, apply_recipe, describe_step, fit_recipe
 
 
 @pytest.fixture

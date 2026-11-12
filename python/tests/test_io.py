@@ -3,7 +3,7 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from lousa.io import ReadError, excel_sheets, read_table
+from giz.io import ReadError, excel_sheets, read_table
 
 
 def test_csv_brasileiro_ponto_e_virgula_e_virgula_decimal():

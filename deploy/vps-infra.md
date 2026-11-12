@@ -3,11 +3,11 @@
 1. Bloco novo em `shared-proxy/vgmelo.caddy`:
 
 ```caddy
-# Lousa: AutoML no navegador. Estático; o treino roda no navegador de quem usa.
+# Giz: AutoML no navegador. Estático; o treino roda no navegador de quem usa.
 ml.vgmelo.tech {
 	import seguro
 	encode zstd gzip
-	reverse_proxy vgmelo-lousa:8080
+	reverse_proxy vgmelo-giz:8080
 }
 ```
 
@@ -24,11 +24,11 @@ ml.vgmelo.tech {
 ```
 
 3. `.env` do portal: `MLFLOW_URL=http://mlflow:5000` (rede interna), `ML_ORIGIN=https://ml.vgmelo.tech`,
-   `MLFLOW_EXPERIMENT=lousa`, `QUOTA_ML=20`. O portal precisa estar numa rede em comum com o MLflow.
+   `MLFLOW_EXPERIMENT=giz`, `QUOTA_ML=20`. O portal precisa estar numa rede em comum com o MLflow.
 
 4. DNS: `ml` (A/AAAA) para a VPS.
 
 5. Link na página de demos do vgmelo.tech.
 
-Conferir se o `import seguro` não manda outro `Content-Security-Policy` ou `Cross-Origin-*`: os da Lousa vêm do
+Conferir se o `import seguro` não manda outro `Content-Security-Policy` ou `Cross-Origin-*`: os do Giz vêm do
 Caddy do container (deploy/Caddyfile) e precisam chegar intactos.

@@ -1,4 +1,4 @@
-// Copia o Pyodide e só os pacotes que a Lousa usa para public/pyodide/, para tudo sair do próprio domínio.
+// Copia o Pyodide e só os pacotes que o Giz usa para public/pyodide/, para tudo sair do próprio domínio.
 // Os wheels vêm do CDN oficial uma vez, ficam em .cache/ e cada um é conferido pelo SHA-256 do pyodide-lock.json.
 // O lock publicado é cortado para conter só esses pacotes (o Pyodide não tenta buscar nada fora da lista).
 import { createHash } from "node:crypto";

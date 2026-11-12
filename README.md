@@ -1,4 +1,4 @@
-# Lousa
+# Giz
 
 AutoML visual que roda no navegador: importe uma planilha, veja o perfil dos dados, monte a receita de tratamento,
 compare modelos e exporte o código Python. Uma alternativa open source ao SageMaker Canvas, sem servidor de treino:
@@ -28,7 +28,7 @@ No ar em https://ml.vgmelo.tech (depois do deploy).
 
 ## Como funciona
 
-- `python/lousa/`: o motor, em Python puro sobre pandas e scikit-learn. É o mesmo código no navegador (Pyodide) e no
+- `python/giz/`: o motor, em Python puro sobre pandas e scikit-learn. É o mesmo código no navegador (Pyodide) e no
   CPython, e os testes rodam nos dois.
 - `src/worker.ts`: carrega o Pyodide e o motor num Web Worker. Pandas e o leitor de Excel (python-calamine) sobem
   primeiro; scikit-learn, LightGBM e XGBoost carregam em segundo plano enquanto a pessoa olha o perfil.
@@ -78,6 +78,6 @@ Os exemplos em `public/samples/` saem de `scripts/make_samples.py`.
 - Código: MIT.
 - Pyodide (MPL-2.0) e os pacotes que ele empacota, cada um com sua licença.
 - Crédito: [Statlog (German Credit Data)](https://archive.ics.uci.edu/dataset/144), Hans Hofmann, UCI Machine
-  Learning Repository, CC BY 4.0. Traduzido e convertido para reais pela Lousa; a versão "com problemas" foi sujada
+  Learning Repository, CC BY 4.0. Traduzido e convertido para reais pelo Giz; a versão "com problemas" foi sujada
   de propósito.
 - Casas da Califórnia: California Housing (Pace e Barry, 1997, via StatLib), censo dos EUA de 1990.

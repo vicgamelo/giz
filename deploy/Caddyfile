@@ -1,4 +1,4 @@
-# Serve o build estático da Lousa dentro do container; HTTPS e HSTS ficam no Caddy compartilhado da VPS.
+# Serve o build estático do Giz dentro do container; HTTPS e HSTS ficam no Caddy compartilhado da VPS.
 # Os cabeçalhos são os mesmos de scripts/headers.mjs (o tests/deploy.test.ts confere).
 {
 	admin off

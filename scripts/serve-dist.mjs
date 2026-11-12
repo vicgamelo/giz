@@ -37,4 +37,4 @@ createServer((req, res) => {
     : "no-cache";
   res.writeHead(200, { ...base, "Content-Type": type, "Cache-Control": cache });
   createReadStream(file).pipe(res);
-}).listen(port, "127.0.0.1", () => console.log(`Lousa (dist) em http://127.0.0.1:${port}`));
+}).listen(port, "127.0.0.1", () => console.log(`Giz (dist) em http://127.0.0.1:${port}`));

@@ -4,8 +4,8 @@ import json
 import numpy as np
 import pytest
 
-from lousa import api, automl, tracking
-from lousa.io import read_table
+from giz import api, automl, tracking
+from giz.io import read_table
 
 
 @pytest.fixture
@@ -33,13 +33,13 @@ def test_payload_tem_parametros_metricas_e_artefatos_sem_linhas(trained, credito
     assert "cv_roc_auc" in p["metrics"] and "baseline_cv_roc_auc" in p["metrics"]
     assert set(p["artifacts"]) == {
         "receita.json",
-        "lousa_modelo.py",
-        "lousa_modelo.ipynb",
+        "giz_modelo.py",
+        "giz_modelo.ipynb",
         "ranking.json",
         "avaliacao.json",
     }
     assert p["model"] is None
-    assert p["tags"]["lousa.dataset_sha256"] and len(p["tags"]["lousa.dataset_sha256"]) == 64
+    assert p["tags"]["giz.dataset_sha256"] and len(p["tags"]["giz.dataset_sha256"]) == 64
     assert all(len(v) <= tracking.MAX_PARAM for v in p["params"].values())
     # nenhuma linha dos dados: o holdout (que tem linhas) e as probabilidades por linha ficam de fora
     blob = json.dumps(p)
@@ -53,7 +53,7 @@ def test_payload_tem_parametros_metricas_e_artefatos_sem_linhas(trained, credito
 @pytest.mark.parametrize("model", ["logreg", "hgb", "rf", "lgbm", "xgb"])
 def test_modelo_skops_volta_igual_e_sem_tipos_estranhos(trained, model):
     pytest.importorskip("skops")
-    from lousa import models
+    from giz import models
 
     spec = next(s for s in models.CLASSIFIERS if s["key"] == model)
     if not models.available(spec):

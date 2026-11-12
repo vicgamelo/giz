@@ -159,18 +159,18 @@ def sections(project: dict) -> dict[str, str]:
         body = ["# receita vazia"]
     tratar = (
         "def tratar(df, prever=False):\n"
-        '    """Receita da Lousa com os valores aprendidos no treino. prever=True não remove linhas."""\n'
+        '    """Receita do Giz com os valores aprendidos no treino. prever=True não remove linhas."""\n'
         "    df = df.copy()\n" + textwrap.indent("\n".join(body), "    ") + "\n    return df\n"
     )
     helper_code = "".join(HELPERS[h] for h in ("texto", "datas", "numero") if h in helpers)
 
     model_imports = [imp]
     header = textwrap.dedent(f'''\
-        """Gerado pela Lousa (https://ml.vgmelo.tech) em {dt.date.today().isoformat()}.
+        """Gerado pelo Giz (https://ml.vgmelo.tech) em {dt.date.today().isoformat()}.
 
         Reproduz a receita de tratamento e o melhor modelo do AutoML: {best["label"]}.
         Problema: {problem}; alvo: {target}; métrica principal: {res["metric"]}.
-        Rode com:  python {project.get("script_name", "lousa_modelo.py")} dados.csv
+        Rode com:  python {project.get("script_name", "giz_modelo.py")} dados.csv
         """
         ''')
     imports = (
@@ -261,7 +261,7 @@ def sections(project: dict) -> dict[str, str]:
         def main(caminho):
             df = tratar(ler(caminho))
             X, y = separar(df)
-            # Mesmo holdout da Lousa: 20%, semente 42.
+            # Mesmo holdout do Giz: 20%, semente 42.
             X_tr, X_ho, y_tr, y_ho = train_test_split(X, y, test_size=0.2, random_state=42, stratify={strat})
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
@@ -347,8 +347,8 @@ def notebook(project: dict) -> str:
     metr = ", ".join(f"{k} = {v:.4f}" for k, v in m.items() if isinstance(v, float))
     cells = [
         md(
-            f"# Modelo da Lousa: {res['best']['label']}\n\nAlvo `{res['target']}` ({res['problem']}). "
-            f"No holdout da Lousa: {metr}.\n\nOs dados não saíram do navegador; este notebook refaz tudo na sua máquina."
+            f"# Modelo do Giz: {res['best']['label']}\n\nAlvo `{res['target']}` ({res['problem']}). "
+            f"No holdout do Giz: {metr}.\n\nOs dados não saíram do navegador; este notebook refaz tudo na sua máquina."
         ),
         code(s["imports"] + s["helpers"]),
         md(

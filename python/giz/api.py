@@ -96,7 +96,7 @@ def predict_path(path: str, filename: str, out_path: str, sheet: str | None = No
 
 def project() -> dict:
     run = _run()
-    name = "lousa_modelo.py"
+    name = "giz_modelo.py"
     return {
         "source": S["source"],
         "steps": S["steps"],

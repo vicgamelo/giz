@@ -2,10 +2,10 @@ import io
 
 import pandas as pd
 
-from lousa import automl
-from lousa.batch import predict_file, to_csv
-from lousa.io import read_table
-from lousa.recipe import fit_recipe
+from giz import automl
+from giz.batch import predict_file, to_csv
+from giz.io import read_table
+from giz.recipe import fit_recipe
 
 STEPS = [
     {"op": "drop_columns", "columns": ["id_contrato", "dias_atraso_pos_concessao"]},

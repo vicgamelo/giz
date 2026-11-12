@@ -1,11 +1,11 @@
-# Lousa na VPS (/opt/vgmelo/lousa), no mesmo molde do vgmelo-site. Sem porta publicada: o Caddy compartilhado
-# chega em vgmelo-lousa:8080 pela rede "web". Subir: docker compose up -d (nesta pasta), com o dist/ em ./public.
-name: vgmelo-lousa
+# Giz na VPS (/opt/vgmelo/giz), no mesmo molde do vgmelo-site. Sem porta publicada: o Caddy compartilhado
+# chega em vgmelo-giz:8080 pela rede "web". Subir: docker compose up -d (nesta pasta), com o dist/ em ./public.
+name: vgmelo-giz
 
 services:
-  lousa:
+  giz:
     image: caddy:2.10-alpine
-    container_name: vgmelo-lousa
+    container_name: vgmelo-giz
     restart: unless-stopped
     read_only: true
     cap_drop: [ALL]

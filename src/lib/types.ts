@@ -1,4 +1,4 @@
-// Formas do JSON que o motor Python devolve (python/lousa).
+// Formas do JSON que o motor Python devolve (python/giz).
 
 export type Kind = "numeric" | "categorical" | "boolean" | "datetime" | "text";
 

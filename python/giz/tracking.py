@@ -28,7 +28,7 @@ def versions() -> dict[str, str]:
         "numpy": numpy.__version__,
         "pandas": pandas.__version__,
         "scikit-learn": sklearn.__version__,
-        "lousa": __version__,
+        "giz": __version__,
     }
     for mod in ("lightgbm", "xgboost", "skops"):
         try:
@@ -103,8 +103,8 @@ def payload(project: dict, run, *, include_model: bool, sha256: str | None = Non
     res, src = project["result"], project["source"]
     artifacts = {
         "receita.json": export.recipe_json(project),
-        "lousa_modelo.py": export.script(project),
-        "lousa_modelo.ipynb": export.notebook(project),
+        "giz_modelo.py": export.script(project),
+        "giz_modelo.ipynb": export.notebook(project),
         "ranking.json": json.dumps(clean(res["ranking"]), ensure_ascii=False, indent=2),
         "avaliacao.json": json.dumps(clean(_evaluation(res)), ensure_ascii=False, indent=2),
     }
@@ -114,12 +114,12 @@ def payload(project: dict, run, *, include_model: bool, sha256: str | None = Non
         "params": _params(project),
         "metrics": _metrics(res),
         "tags": {
-            "lousa.problem": res["problem"],
-            "lousa.target": res["target"],
-            "lousa.dataset": str(src.get("filename", ""))[:200],
-            "lousa.dataset_rows": str(src.get("rows", "")),
-            "lousa.dataset_sha256": sha256 or "",
-            "lousa.versions": json.dumps(vers, sort_keys=True),
+            "giz.problem": res["problem"],
+            "giz.target": res["target"],
+            "giz.dataset": str(src.get("filename", ""))[:200],
+            "giz.dataset_rows": str(src.get("rows", "")),
+            "giz.dataset_sha256": sha256 or "",
+            "giz.versions": json.dumps(vers, sort_keys=True),
         },
         "artifacts": artifacts,
         "model": None,
@@ -130,9 +130,7 @@ def payload(project: dict, run, *, include_model: bool, sha256: str | None = Non
                 "Este modelo (k vizinhos) guarda as linhas de treino; ele não vai para o MLflow."
             )
         data = model_bytes(run)
-        reqs = (
-            "\n".join(f"{k}=={v}" for k, v in vers.items() if k not in ("python", "lousa", "pyodide")) + "\n"
-        )
+        reqs = "\n".join(f"{k}=={v}" for k, v in vers.items() if k not in ("python", "giz", "pyodide")) + "\n"
         signature = {
             "inputs": {"numeric": run.num, "categorical": run.cat},
             "output": {"problem": run.problem, "classes": run.classes},

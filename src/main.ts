@@ -4,7 +4,7 @@ import App from "./App.svelte";
 
 const saved = (() => {
   try {
-    return localStorage.getItem("lousa-tema");
+    return localStorage.getItem("giz-tema");
   } catch {
     return null;
   }

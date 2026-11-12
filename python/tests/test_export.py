@@ -1,4 +1,4 @@
-"""O script exportado precisa chegar ao mesmo lugar que a Lousa: mesmos dados tratados, mesmo holdout e as
+"""O script exportado precisa chegar ao mesmo lugar que o Giz: mesmos dados tratados, mesmo holdout e as
 mesmas previsões do modelo final."""
 
 import ast
@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from lousa import api, automl
+from giz import api, automl
 
 STEPS = [
     {"op": "drop_columns", "columns": ["id_contrato", "dias_atraso_pos_concessao"]},
@@ -36,11 +36,11 @@ def session(problemas_bytes, tmp_path):
 
 
 def _exec(code: str, cwd) -> dict:
-    ns: dict = {"__name__": "lousa_exportado"}
+    ns: dict = {"__name__": "giz_exportado"}
     old = os.getcwd()
     os.chdir(cwd)
     try:
-        exec(compile(code, "lousa_modelo.py", "exec"), ns)  # noqa: S102 — é o script que a Lousa gera
+        exec(compile(code, "giz_modelo.py", "exec"), ns)  # noqa: S102 — é o script que o Giz gera
     finally:
         os.chdir(old)
     return ns

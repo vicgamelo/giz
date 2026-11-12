@@ -42,7 +42,7 @@ export const SAMPLES = [
     file: "credito-com-problemas.csv",
     title: "Crédito com problemas",
     detail: "O mesmo crédito com sujeira de propósito: ID, datas em texto, R$ em texto, nulos, repetidas e vazamento",
-    source: "Modificado pela Lousa para a demo",
+    source: "Modificado pelo Giz para a demo",
     target: "inadimplente",
     batch: "credito-com-problemas-novos.csv",
   },
