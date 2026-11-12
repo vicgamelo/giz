@@ -1,0 +1,31 @@
+# Lousa na VPS (/opt/vgmelo/lousa), no mesmo molde do vgmelo-site. Sem porta publicada: o Caddy compartilhado
+# chega em vgmelo-lousa:8080 pela rede "web". Subir: docker compose up -d (nesta pasta), com o dist/ em ./public.
+name: vgmelo-lousa
+
+services:
+  lousa:
+    image: caddy:2.10-alpine
+    container_name: vgmelo-lousa
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE]
+    user: "65534:65534"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./public:/srv:ro
+    tmpfs:
+      - /data:uid=65534,gid=65534,mode=0700
+      - /config:uid=65534,gid=65534,mode=0700
+    environment:
+      XDG_DATA_HOME: /data
+      XDG_CONFIG_HOME: /config
+    networks: [web]
+    mem_limit: 64m
+    logging:
+      driver: json-file
+      options: { max-size: 5m, max-file: "2" }
+
+networks:
+  web:
+    external: true

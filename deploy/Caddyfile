@@ -1,0 +1,32 @@
+# Serve o build estático da Lousa dentro do container; HTTPS e HSTS ficam no Caddy compartilhado da VPS.
+# Os cabeçalhos são os mesmos de scripts/headers.mjs (o tests/deploy.test.ts confere).
+{
+	admin off
+	auto_https off
+}
+
+:8080 {
+	root * /srv
+	header {
+		# Pyodide compila WebAssembly: 'wasm-unsafe-eval' e nada de 'unsafe-eval' nem script inline.
+		# connect-src: o próprio domínio (Pyodide, exemplos) e o portal, só para o registro no MLflow.
+		Content-Security-Policy "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; connect-src 'self' https://vgmelo.tech; img-src 'self' data: blob:; style-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+		# Isolamento entre origens: o botão Parar usa SharedArrayBuffer.
+		Cross-Origin-Opener-Policy same-origin
+		Cross-Origin-Embedder-Policy require-corp
+		Cross-Origin-Resource-Policy same-origin
+		Referrer-Policy strict-origin-when-cross-origin
+		X-Content-Type-Options nosniff
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		-Server
+	}
+
+	# /pyodide/v<versão>/ e /assets/ têm versão ou hash no caminho: cache para sempre. O resto revalida.
+	@imutavel path /pyodide/* /assets/*
+	@resto not path /pyodide/* /assets/*
+	header @imutavel Cache-Control "public, max-age=31536000, immutable"
+	header @resto Cache-Control "no-cache"
+
+	try_files {path} /index.html
+	file_server
+}

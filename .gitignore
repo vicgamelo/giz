@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.cache/
+public/pyodide/
+python/.venv/
+python/.ruff_cache/
+__pycache__/
+.pytest_cache/
+.DS_Store
+*.joblib

@@ -1,0 +1,61 @@
+id_contrato;data_pedido;prazo_meses;valor_credito;comprometimento_renda;anos_na_residencia;idade;creditos_ativos;dependentes;conta_corrente;historico_credito;finalidade;poupanca;tempo_emprego;garantia;patrimonio;outros_parcelamentos;moradia;emprego;telefone
+C-100185;21/02/2024;21;R$ 122.996,00;4;4;30;1;1;sem conta;crítico;carro novo;sem poupança;7 anos ou mais;nenhuma;nenhum;nenhum;cedida;gestor ou autônomo;sim
+C-100152;21/02/2023;12;R$ 35.084,90;1;4;28;3;1;até R$ 1.940;crítico;móveis;até R$ 970;7 anos ou mais;nenhuma;carro;nenhum;aluguel;qualificado;sim
+C-100593;06/07/2024;9;R$ 18.614,30;4;3;35;1;1;até R$ 1.940;crítico;móveis;até R$ 970;4 a 7 anos;nenhuma;carro;nenhum;aluguel;qualificado;sim
+C-100095;06/01/2023;12;R$ 11.203,50;3;3;40;2;1;até R$ 1.940;em dia;rádio/TV;até R$ 970;7 anos ou mais;fiador;imóvel;banco;própria;não qualificado;não
+C-100837;23/02/2024;18;R$ 6.101,30;4;3;32;2;1;sem conta;crítico;rádio/TV;R$ 4.850 a 9.700;7 anos ou mais;nenhuma;seguro de vida;banco;própria;gestor ou autônomo;sim
+C-100919;02/09/2023;30;R$ 23.338,20;4;4;23;1;1;negativa;em dia;móveis;até R$ 970;4 a 7 anos;nenhuma;imóvel;nenhum;aluguel;qualificado;não
+C-100143;06/03/2023;36;R$ 106.447,80;4;2;26;2;1;sem conta;em dia;móveis;até R$ 970;desempregado;nenhuma;carro;nenhum;própria;gestor ou autônomo;sim
+C-100060;19/04/2024;12;R$ 29.264,90;3;1;34;1;1;até R$ 1.940;em dia;móveis;até R$ 970;menos de 1 ano;nenhuma;imóvel;nenhum;aluguel;gestor ou autônomo;não
+C-100490;06/03/2023;48;R$ 99.153,40;4;3;37;1;1;sem conta;em dia;rádio/TV;sem poupança;4 a 7 anos;nenhuma;carro;lojas;própria;qualificado;sim
+C-100904;04/08/2023;18;R$ 34.037,30;4;1;25;1;1;negativa;em dia;rádio/TV;até R$ 970;4 a 7 anos;fiador;imóvel;nenhum;própria;qualificado;não
+C-100900;18/07/2023;42;R$ 76.455,40;2;4;45;1;2;negativa;em dia;móveis;até R$ 970;4 a 7 anos;fiador;seguro de vida;nenhum;cedida;qualificado;não
+C-100017;25/12/2024;24;R$ 17.954,70;4;2;33;2;1;sem conta;crítico;rádio/TV;até R$ 970;4 a 7 anos;fiador;carro;nenhum;própria;qualificado;sim
+C-100541;10/12/2023;45;R$ 46.036,20;4;2;25;2;1;até R$ 1.940;crítico;rádio/TV;até R$ 970;menos de 1 ano;nenhuma;seguro de vida;nenhum;própria;não qualificado;não
+C-100518;15/07/2023;24;R$ 49.314,80;2;4;42;1;1;até R$ 1.940;em dia;rádio/TV;sem poupança;7 anos ou mais;nenhuma;carro;nenhum;própria;qualificado;sim
+C-100145;30/10/2023;10;R$ 21.437,00;2;2;25;1;1;sem conta;em dia;móveis;até R$ 970;1 a 4 anos;nenhuma;imóvel;banco;aluguel;não qualificado;não
+C-100725;18/12/2024;24;R$ 12.396,60;4;1;36;1;1;sem conta;em dia;rádio/TV;até R$ 970;7 anos ou mais;nenhuma;imóvel;nenhum;própria;gestor ou autônomo;sim
+C-100794;16/02/2024;24;R$ 30.118,50;4;2;25;2;1;sem conta;em dia;rádio/TV;sem poupança;menos de 1 ano;nenhuma;carro;nenhum;própria;qualificado;não
+C-100656;16/03/2024;12;R$ 6.198,30;4;2;30;1;1;até R$ 1.940;em dia;reforma;até R$ 970;;nenhuma;carro;nenhum;própria;qualificado;não
+C-100510;31/10/2023;12;R$ 10.058,90;3;4;39;1;1;até R$ 1.940;em dia;negócio;R$ 970 a 4.850;4 a 7 anos;nenhuma;imóvel;nenhum;própria;não qualificado;não
+C-100807;13/10/2024;15;R$ 22.571,90;2;3;25;1;1;R$ 1.940 ou mais;em dia;rádio/TV;até R$ 970;menos de 1 ano;nenhuma;imóvel;nenhum;própria;não qualificado;não
+C-100356;25/08/2023;21;R$ 26.839,90;4;2;;2;1;até R$ 1.940;em dia;negócio;R$ 970 a 4.850;7 anos ou mais;nenhuma;carro;banco;aluguel;não qualificado;não
+C-100987;27/12/2023;12;R$ 14.297,80;4;1;33;1;1;R$ 1.940 ou mais;em dia;móveis;;menos de 1 ano;nenhuma;seguro de vida;banco;própria;gestor ou autônomo;sim
+C-100886;18/06/2023;36;R$ 25.346,10;4;2;27;2;1;sem conta;sem créditos;reforma;até R$ 970;1 a 4 anos;nenhuma;carro;nenhum;própria;qualificado;não
+C-100556;16/10/2024;12;R$ 8.109,20;4;2;23;1;1;até R$ 1.940;em dia;carro novo;R$ 970 a 4.850;menos de 1 ano;nenhuma;seguro de vida;banco;própria;não qualificado;não
+C-100558;30/01/2024;6;R$ 34.124,60;2;3;26;1;1;sem conta;em dia;carro novo;até R$ 970;1 a 4 anos;fiador;seguro de vida;nenhum;aluguel;qualificado;não
+C-100222;02/12/2024;36;R$ 69.131,90;2;4;23;2;1;sem conta;crítico;móveis;até R$ 970;menos de 1 ano;nenhuma;seguro de vida;nenhum;aluguel;qualificado;sim
+C-100804;02/08/2023;6;R$ 12.978,60;1;4;62;1;1;sem conta;em dia;eletrodoméstico;R$ 4.850 a 9.700;1 a 4 anos;nenhuma;imóvel;nenhum;própria;qualificado;não
+C-100110;24/10/2023;12;R$ 58.956,60;2;2;32;1;1;até R$ 1.940;em dia;carro novo;até R$ 970;4 a 7 anos;nenhuma;carro;nenhum;própria;qualificado;não
+C-100120;18/09/2024;12;R$ 9.467,20;4;4;35;2;1;sem conta;crítico;rádio/TV;sem poupança;7 anos ou mais;nenhuma;carro;nenhum;própria;qualificado;não
+C-100237;09/08/2024;24;R$ 28.886,60;4;4;32;2;2;sem conta;atrasou antes;negócio;sem poupança;1 a 4 anos;nenhuma;imóvel;nenhum;própria;qualificado;sim
+C-100414;28/06/2023;36;R$ 35.114,00;1;2;37;1;2;negativa;em dia;móveis;até R$ 970;1 a 4 anos;fiador;seguro de vida;nenhum;própria;qualificado;não
+C-100475;25/11/2024;24;R$ 9.932,80;4;4;48;1;1;negativa;atrasou antes;rádio/TV;até R$ 970;menos de 1 ano;nenhuma;imóvel;lojas;própria;qualificado;não
+C-100071;17/09/2023;18;R$ 32.766,60;2;1;31;1;1;sem conta;em dia;carro usado;sem poupança;1 a 4 anos;nenhuma;seguro de vida;nenhum;própria;qualificado;sim
+C-100535;14/11/2024;12;R$ 33.940,30;3;2;29;2;1;negativa;crítico;carro novo;até R$ 970;1 a 4 anos;cotitular;imóvel;nenhum;própria;qualificado;não
+C-100330;30/06/2023;12;R$ 18.022,60;4;1;22;1;1;negativa;em dia;móveis;até R$ 970;menos de 1 ano;nenhuma;carro;nenhum;aluguel;qualificado;não
+C-100003;02/09/2023;24;R$ 12.716,70;4;3;26;1;1;sem conta;em dia;rádio/TV;R$ 970 a 4.850;4 a 7 anos;nenhuma;seguro de vida;nenhum;própria;qualificado;sim
+C-100405;21/11/2023;12;R$ 19.671,60;4;2;30;1;1;até R$ 1.940;em dia;carro usado;sem poupança;;nenhuma;carro;nenhum;própria;qualificado;não
+C-100127;21/05/2024;12;R$ 7.187,70;4;3;22;1;1;negativa;em dia;eletrodoméstico;R$ 970 a 4.850;desempregado;nenhuma;seguro de vida;nenhum;própria;qualificado;não
+C-100967;31/01/2024;30;R$ 40.943,70;2;1;28;2;1;até R$ 1.940;sem créditos;negócio;até R$ 970;1 a 4 anos;nenhuma;carro;nenhum;própria;qualificado;não
+C-100911;13/08/2023;24;R$ 18.672,50;2;2;26;1;1;R$ 1.940 ou mais;em dia;móveis;até R$ 970;1 a 4 anos;nenhuma;imóvel;nenhum;própria;qualificado;não
+C-100615;03/01/2024;9;R$ 14.336,60;4;2;22;1;1;sem conta;em dia;rádio/TV;até R$ 970;4 a 7 anos;nenhuma;carro;nenhum;própria;qualificado;não
+C-100131;14/02/2023;60;R$ 60.993,60;4;4;42;1;1;até R$ 1.940;em dia;educação;até R$ 970;1 a 4 anos;nenhuma;nenhum;nenhum;cedida;qualificado;não
+C-100958;29/06/2024;48;R$ 52.195,70;3;4;40;1;1;até R$ 1.940;em dia;outro;sem poupança;desempregado;nenhuma;nenhum;banco;cedida;sem emprego fixo;sim
+C-100261;21/04/2024;12;R$ 21.795,90;2;2;36;2;1;R$ 1.940 ou mais;atrasou antes;carro novo;até R$ 970;1 a 4 anos;nenhuma;carro;lojas;própria;qualificado;sim
+C-100758;14/12/2024;48;R$ 59.587,10;4;4;58;2;1;negativa;crítico;carro usado;até R$ 970;7 anos ou mais;nenhuma;nenhum;lojas;cedida;não qualificado;não
+C-100365;18/05/2023;6;R$ 15.471,50;3;2;51;1;2;sem conta;em dia;rádio/TV;até R$ 970;4 a 7 anos;nenhuma;seguro de vida;nenhum;própria;qualificado;não
+C-100946;08/03/2023;18;R$ 36.666,00;3;2;35;2;1;sem conta;crítico;móveis;até R$ 970;menos de 1 ano;nenhuma;carro;nenhum;própria;gestor ou autônomo;sim
+C-100401;28/07/2023;6;R$ 4.200,10;4;2;24;1;2;até R$ 1.940;tudo pago neste banco;educação;R$ 9.700 ou mais;menos de 1 ano;nenhuma;seguro de vida;banco;aluguel;qualificado;não
+C-100181;29/11/2023;18;R$ 38.470,20;1;4;33;3;1;negativa;crítico;carro novo;;7 anos ou mais;nenhuma;imóvel;banco;aluguel;qualificado;sim
+C-100235;03/02/2024;12;R$ 10.679,70;3;2;27;2;1;sem conta;em dia;carro novo;até R$ 970;1 a 4 anos;nenhuma;imóvel;nenhum;própria;qualificado;sim
+C-100856;29/02/2024;18;R$ 22.096,60;3;3;28;2;1;até R$ 1.940;sem créditos;carro novo;R$ 970 a 4.850;menos de 1 ano;nenhuma;carro;nenhum;própria;qualificado;não
+C-100972;12/04/2023;6;R$ 20.176,00;1;2;24;1;1;sem conta;crítico;carro novo;R$ 4.850 a 9.700;1 a 4 anos;nenhuma;carro;nenhum;própria;qualificado;não
+C-100241;01/03/2024;36;R$ 22.329,40;4;4;31;1;1;negativa;em dia;rádio/TV;até R$ 970;1 a 4 anos;nenhuma;carro;nenhum;aluguel;qualificado;não
+C-100551;13/10/2023;9;R$ 12.493,60;3;4;48;2;2;negativa;crítico;reforma;R$ 970 a 4.850;7 anos ou mais;fiador;imóvel;nenhum;própria;qualificado;não
+C-100138;09/02/2023;12;R$ 6.324,40;4;4;24;1;1;negativa;em dia;móveis;até R$ 970;7 anos ou mais;nenhuma;seguro de vida;nenhum;aluguel;qualificado;não
+C-100627;28/08/2024;24;R$ 22.154,80;4;2;28;1;1;sem conta;em dia;rádio/TV;até R$ 970;4 a 7 anos;nenhuma;carro;nenhum;própria;qualificado;sim
+C-100555;07/06/2023;18;R$ 62.642,60;2;4;39;2;2;sem conta;tudo pago neste banco;carro novo;até R$ 970;7 anos ou mais;nenhuma;nenhum;banco;própria;gestor ou autônomo;sim
+C-100470;16/12/2023;12;R$ 27.732,30;4;4;38;1;1;sem conta;em dia;carro novo;sem poupança;desempregado;nenhuma;nenhum;nenhum;própria;gestor ou autônomo;sim
+C-100746;26/01/2023;8;R$ 8.797,90;3;2;26;1;1;até R$ 1.940;em dia;negócio;até R$ 970;menos de 1 ano;nenhuma;imóvel;nenhum;própria;qualificado;sim
+C-100050;05/12/2024;12;R$ 15.442,40;3;2;35;1;1;sem conta;crítico;móveis;R$ 9.700 ou mais;4 a 7 anos;nenhuma;seguro de vida;nenhum;própria;qualificado;não
