@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "vendor": "node scripts/vendor-pyodide.mjs",
+    "vendor:llm": "node scripts/vendor-llm.mjs",
     "dev": "node scripts/vendor-pyodide.mjs && vite",
     "build": "node scripts/vendor-pyodide.mjs && vite build && node scripts/check-dist.mjs",
     "preview": "node scripts/serve-dist.mjs",
@@ -13,6 +14,7 @@
     "test:py:native": "cd python && uv run pytest -q -W ignore"
   },
   "dependencies": {
+    "@mlc-ai/web-llm": "0.2.87",
     "pyodide": "314.0.7"
   },
   "devDependencies": {

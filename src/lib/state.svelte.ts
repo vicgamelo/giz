@@ -208,6 +208,10 @@ class AppState {
     if (this.result) this.stale = true;
     this.targetInfo = null;
     if (this.previewTimer) clearTimeout(this.previewTimer);
+    // A prévia está pendente desde já (não só quando o timer dispara): quem depende do perfil novo espera. O
+    // número de sequência também anda, para uma prévia que ainda está no ar não dar a pendência por encerrada.
+    this.previewing = true;
+    this.previewSeq++;
     this.previewTimer = setTimeout(() => void this.preview(), 200);
   }
 

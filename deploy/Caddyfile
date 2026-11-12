@@ -9,7 +9,7 @@
 	root * /srv
 	header {
 		# Pyodide compila WebAssembly: 'wasm-unsafe-eval' e nada de 'unsafe-eval' nem script inline.
-		# connect-src: o próprio domínio (Pyodide, exemplos) e o portal, só para o registro no MLflow.
+		# connect-src: o próprio domínio (Pyodide, exemplos, pesos do assistente) e o portal (MLflow e assistente online).
 		Content-Security-Policy "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; connect-src 'self' https://vgmelo.tech; img-src 'self' data: blob:; style-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
 		# Isolamento entre origens: o botão Parar usa SharedArrayBuffer.
 		Cross-Origin-Opener-Policy same-origin
@@ -23,10 +23,29 @@
 
 	# /pyodide/v<versão>/ e /assets/ têm versão ou hash no caminho: cache para sempre. O resto revalida.
 	@imutavel path /pyodide/* /assets/*
-	@resto not path /pyodide/* /assets/*
+	@llm path /llm/*
+	@resto not path /pyodide/* /assets/* /llm/*
 	header @imutavel Cache-Control "public, max-age=31536000, immutable"
+	# Pesos do assistente local: quem guarda é o Cache API do WebLLM; no cache HTTP seria 1 GB em dobro.
+	header @llm Cache-Control "no-store"
 	header @resto Cache-Control "no-cache"
 
-	try_files {path} /index.html
+	# Os pesos (~1 GB) ficam num volume à parte, fora do dist: /llm/<modelo>/… sai de /srv-llm/llm/<modelo>/…
+	root @llm /srv-llm
+
+	# Só as rotas da página caem no index.html. Um arquivo que falta em /pyodide, /assets ou /llm responde 404.
+	@pagina {
+		not path /pyodide/* /assets/* /llm/*
+		file {
+			try_files {path} /index.html
+		}
+	}
+	rewrite @pagina {file_match.relative}
 	file_server
+
+	# O 404 não herda o "immutable" do caminho: senão o navegador guardaria a falta do arquivo por um ano.
+	handle_errors {
+		header Cache-Control "no-store"
+		respond "{err.status_code} {err.status_text}" {err.status_code}
+	}
 }
