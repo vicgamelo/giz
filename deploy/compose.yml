@@ -14,6 +14,8 @@ services:
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - ./public:/srv:ro
+      # Pesos do assistente local (scripts/vendor-llm.mjs → rsync de .cache/llm/llm). Sem a pasta, só o assistente local some.
+      - ./llm:/srv-llm/llm:ro
     tmpfs:
       - /data:uid=65534,gid=65534,mode=0700
       - /config:uid=65534,gid=65534,mode=0700

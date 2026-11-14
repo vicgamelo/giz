@@ -26,6 +26,9 @@ No ar em https://ml.vgmelo.tech (depois do deploy).
 7. **Exportar**: script Python ou notebook que refaz a receita com os valores aprendidos e treina o mesmo modelo, e
    a receita em JSON. Opcionalmente, **registrar no MLflow** pelo portal do vgmelo.tech (com login e cota).
 
+Em qualquer passo dá para abrir o **assistente**: um chat que vê um resumo da tela (perfil, alertas, receita,
+ranking, métricas), explica em português simples e sugere correções que só entram na receita com um clique.
+
 ## Como funciona
 
 - `python/giz/`: o motor, em Python puro sobre pandas e scikit-learn. É o mesmo código no navegador (Pyodide) e no
@@ -38,6 +41,30 @@ No ar em https://ml.vgmelo.tech (depois do deploy).
 - CSP estrita: `script-src 'self' 'wasm-unsafe-eval'`, sem `unsafe-eval` e sem nada inline. COOP/COEP ligados para o
   botão Parar (SharedArrayBuffer). Os cabeçalhos estão em `scripts/headers.mjs` e em `deploy/Caddyfile`, e um teste
   confere que são iguais.
+
+### Assistente
+
+O assistente não recebe o arquivo. O Giz monta um resumo em texto do passo atual (contagens, tipos,
+médias, alertas, receita, ranking, métricas) e é isso que o modelo lê; colunas criadas pelo one-hot entram como
+`coluna_*`, sem a categoria no nome. As ações vêm de uma lista que o próprio Giz calcula (as correções dos alertas, a
+coluna alvo, o próximo passo): o modelo só cita o código de uma delas, e nada roda sem o clique de quem usa. Só no
+modo local, e só se a pessoa marcar, as 5 primeiras linhas entram no resumo.
+
+- **No navegador (padrão)**: um modelo pequeno (Qwen3 1.7B, ~1 GB) roda na placa de vídeo com
+  [WebLLM](https://github.com/mlc-ai/web-llm)/WebGPU, num Web Worker. O download só começa por clique, os pesos saem
+  do próprio domínio e ficam no cache do navegador; depois disso funciona offline, e a conversa não sai do aparelho.
+  Sem WebGPU (ou sem `shader-f16`), o painel explica o motivo. Modelo pequeno erra: as contas que importam ("o modelo
+  está bom?") já vão feitas no resumo, e o painel avisa para conferir os números na tela.
+- **Online (opcional)**: `POST /api/ml/assistant` no portal do vgmelo.tech, com login e cota, que repassa a um
+  provedor de LLM com a chave só no servidor. Antes do primeiro envio o painel mostra para onde vai e exatamente o que
+  sai, e pede um "Concordo"; o consentimento vale para o arquivo aberto. Nesse modo o resumo é mais magro: sem nome
+  de arquivo, sem mínimos e máximos, sem texto de erros e sem exemplos de linhas. O selo do topo muda enquanto o modo
+  online está ligado.
+
+Os pesos não entram no `dist/`: `npm run vendor:llm` baixa para `.cache/llm` os arquivos listados em
+`scripts/llm-lock.json` (revisão fixa no Hugging Face, SHA-256 de cada arquivo) e o `npm run dev`/`npm run preview`
+servem `/llm/` de lá. Em produção a pasta vai para um volume à parte (`deploy/vps-infra.md`). Sem ela o Giz funciona
+igual, só sem o assistente local.
 
 ### MLflow
 
@@ -62,14 +89,20 @@ confere login, cota e formato, põe as tags de autoria e repassa ao MLflow pela 
 ```bash
 npm install
 npm run dev          # baixa o Pyodide para public/ (uma vez) e sobe o Vite em :5180
+npm run vendor:llm   # opcional: baixa o modelo do assistente local (~1 GB) para .cache/llm
 npm run build        # dist/ + check-dist (sem inline, sem CDN, Pyodide inteiro e com SHA certo)
 npm run preview      # serve dist/ com a CSP/COOP/COEP de produção em :4180
-npm test             # vitest (gráficos, receita, formatação, ranking, cabeçalhos)
+npm test             # vitest (gráficos, receita, formatação, ranking, cabeçalhos, assistente)
 npm run test:py      # testes do motor dentro do Pyodide, no Node (as mesmas versões do navegador)
 cd python && uv run pytest -q   # os mesmos testes no CPython (LightGBM/XGBoost precisam de libomp no macOS)
 ```
 
-`VITE_PORTAL_URL` troca o portal usado no registro do MLflow (padrão: https://vgmelo.tech).
+`VITE_PORTAL_URL` troca o portal usado no registro do MLflow e no assistente online (padrão: https://vgmelo.tech).
+O `npm run preview` precisa da mesma URL em `PORTAL` (entra no `connect-src` da CSP). Teste o assistente local em
+`http://127.0.0.1:4180`, não em `localhost`: o WebLLM não guarda a lib wasm no cache quando a URL tem "localhost".
+
+`node scripts/vendor-llm.mjs --update <repo do HF> <lib .wasm>` troca o modelo e regrava o lock;
+`scripts/make_fixtures.py` regera os JSON de `tests/fixtures/` (saídas reais do motor usadas nos testes do assistente).
 
 Os exemplos em `public/samples/` saem de `scripts/make_samples.py`.
 

@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, untrack } from "svelte";
+  import { assistant } from "./lib/assistant";
   import { app, STEPS, type StepKey } from "./lib/state.svelte";
   import { fmtSeconds } from "./lib/format";
   import ImportStep from "./components/ImportStep.svelte";
@@ -9,6 +10,7 @@
   import EvaluateStep from "./components/EvaluateStep.svelte";
   import PredictStep from "./components/PredictStep.svelte";
   import ExportStep from "./components/ExportStep.svelte";
+  import AssistantPanel from "./components/AssistantPanel.svelte";
 
   let theme = $state<"light" | "dark" | null>(null);
 
@@ -16,6 +18,26 @@
     app.start();
     const t = document.documentElement.dataset.theme;
     theme = t === "light" || t === "dark" ? t : null;
+    try {
+      assistant.open = localStorage.getItem("giz-assistente") === "aberto";
+    } catch {
+      /* modo privado */
+    }
+  });
+
+  function toggleAssistant() {
+    assistant.open = !assistant.open;
+    try {
+      localStorage.setItem("giz-assistente", assistant.open ? "aberto" : "fechado");
+    } catch {
+      /* modo privado */
+    }
+  }
+
+  // Arquivo ou aba nova: a conversa e o consentimento do modo online valiam para os dados anteriores.
+  $effect(() => {
+    void app.source;
+    untrack(() => assistant.reset());
   });
 
   function toggleTheme() {
@@ -58,15 +80,30 @@
     </div>
   </div>
   <div class="right">
-    <span class="privacy" title="O Python roda neste navegador (WebAssembly). O arquivo não é enviado a nenhum servidor.">
-      <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"
-        ><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6l7-3z" class="shield" /><path
-          d="M9 12l2 2 4-4"
-          class="check"
-        /></svg
+    {#if assistant.sendsData}
+      <span
+        class="privacy out"
+        title="O arquivo continua só neste navegador. Com o assistente online ligado, suas perguntas e um resumo do passo (nomes de colunas, contagens, métricas) vão ao vgmelo.tech."
       >
-      Seus dados não saem do navegador
-    </span>
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"
+          ><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6l7-3z" class="shield" /></svg
+        >
+        Assistente online: resumos saem do navegador
+      </span>
+    {:else}
+      <span
+        class="privacy"
+        title="O Python roda neste navegador (WebAssembly) e o arquivo não é enviado a nenhum servidor. Resumos só saem se você pedir: ao registrar no MLflow ou ao ligar o assistente online."
+      >
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"
+          ><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6l7-3z" class="shield" /><path
+            d="M9 12l2 2 4-4"
+            class="check"
+          /></svg
+        >
+        O arquivo não sai do navegador
+      </span>
+    {/if}
     <span class="py" class:ok={app.mlReady} class:err={app.stage === "error"} title={app.status}>
       {#if app.stage === "error"}
         Python com erro
@@ -78,6 +115,12 @@
         <span class="spinner"></span> Carregando Python…
       {/if}
     </span>
+    <button class="btn sm assist-btn" class:on={assistant.open} onclick={toggleAssistant} aria-expanded={assistant.open} aria-controls={assistant.open ? "assistente" : undefined}>
+      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"
+        ><path d="M4 5h16v11H9l-5 4V5z" class="moon" /></svg
+      >
+      Assistente
+    </button>
     <button class="btn ghost sm" onclick={toggleTheme} aria-label="Alternar tema claro/escuro">
       <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"
         ><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z" class="moon" /></svg
@@ -86,7 +129,7 @@
   </div>
 </header>
 
-<div class="layout">
+<div class="layout" class:with-assistant={assistant.open}>
   <nav class="steps" aria-label="Etapas">
     <ol>
       {#each STEPS as s, i (s.key)}
@@ -137,6 +180,12 @@
       <ExportStep />
     {/if}
   </main>
+
+  {#if assistant.open}
+    <div class="assistant" id="assistente">
+      <AssistantPanel />
+    </div>
+  {/if}
 </div>
 
 {#if app.busy}
@@ -211,6 +260,14 @@
     padding: 4px 10px;
     border-radius: 999px;
   }
+  .privacy.out {
+    color: var(--warn);
+    background: var(--warn-soft);
+  }
+  .assist-btn.on {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
   .shield {
     fill: none;
     stroke: currentColor;
@@ -258,6 +315,31 @@
     position: sticky;
     top: 74px;
     align-self: start;
+  }
+  /* Assistente: até 1.180 px fica por cima da tela (a coluna do meio ficaria estreita demais); acima disso vira a
+     terceira coluna. */
+  .assistant {
+    position: fixed;
+    z-index: 25;
+    top: 62px;
+    right: 12px;
+    bottom: 12px;
+    width: min(400px, calc(100vw - 24px));
+  }
+  @media (min-width: 1181px) {
+    .layout.with-assistant {
+      grid-template-columns: 230px minmax(0, 1fr) 380px;
+      max-width: 1700px;
+    }
+    .assistant {
+      position: sticky;
+      top: 74px;
+      right: auto;
+      bottom: auto;
+      width: auto;
+      height: calc(100vh - 94px);
+      align-self: start;
+    }
   }
   .steps ol {
     list-style: none;

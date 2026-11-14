@@ -46,6 +46,10 @@ for (const f of ["credito.csv", "credito-com-problemas.csv", "casas-california.x
   if (!existsSync(join(dist, "samples", f))) errors.push(`falta o exemplo ${f}`);
 }
 
+// Os pesos do assistente local (~1 GB) vão num volume à parte (scripts/vendor-llm.mjs), nunca dentro do build.
+if (existsSync(join(dist, "llm"))) errors.push("dist/llm não deveria existir: os pesos do assistente ficam fora do build");
+if (!files.some((f) => /assets\/llm\.worker-[\w-]+\.js$/.test(f))) errors.push("falta o worker do assistente local (assets/llm.worker-*.js)");
+
 const total = files.reduce((n, f) => n + statSync(f).size, 0);
 if (errors.length) {
   console.error(errors.map((e) => `✗ ${e}`).join("\n"));
