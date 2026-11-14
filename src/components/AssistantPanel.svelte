@@ -82,7 +82,7 @@
       {:else if a.kind === "online"}
         <span class="chip" title="Nada sai do navegador antes de você concordar">online · nada enviado</span>
       {:else}
-        <span class="chip accent" title="O modelo roda neste navegador; nada é enviado">neste navegador</span>
+        <span class="chip good" title="O modelo roda neste navegador; nada é enviado">neste navegador</span>
       {/if}
     </div>
     <button class="btn ghost sm close" onclick={() => (a.open = false)} aria-label="Fechar o assistente">✕</button>
@@ -358,6 +358,11 @@
 </aside>
 
 <style>
+  /* sem conversa (escolha de modo, login, avisos) o painel fica da altura do conteúdo, sem vazio embaixo */
+  .assist:not(:has(.chat)) {
+    height: auto;
+    max-height: 100%;
+  }
   .assist {
     display: flex;
     flex-direction: column;
@@ -462,7 +467,8 @@
     justify-items: center;
     text-align: center;
     overflow-y: auto;
-    padding-top: clamp(16px, 12vh, 120px) !important;
+    padding-top: 20px !important;
+    padding-bottom: 12px;
     min-height: 0;
     font-size: 0.92rem;
     padding: 8px 6px;

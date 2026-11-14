@@ -13,6 +13,19 @@
   import AssistantPanel from "./components/AssistantPanel.svelte";
 
   let theme = $state<"light" | "dark" | null>(null);
+  // mesmos itens principais do menu do vgmelo.tech, para o Giz parecer parte do site
+  const SITE = [
+    { href: "https://vgmelo.tech/projetos/", label: "Projetos" },
+    { href: "https://vgmelo.tech/demos/", label: "Demos" },
+    { href: "https://vgmelo.tech/artigos/", label: "Artigos" },
+    { href: "https://vgmelo.tech/contato/", label: "Contato" },
+  ];
+  let menuEl = $state<HTMLDetailsElement>();
+  // fecha o menu com Esc ou com um toque fora dele
+  const closeMenu = (e: Event) => {
+    if (!menuEl?.open) return;
+    if (e instanceof KeyboardEvent ? e.key === "Escape" : !menuEl.contains(e.target as Node)) menuEl.open = false;
+  };
 
   onMount(() => {
     app.start();
@@ -77,9 +90,18 @@
   });
 </script>
 
+<svelte:window onpointerdowncapture={closeMenu} onkeydown={closeMenu} />
+
 <header class="top">
   <div class="brand">
-    <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true">
+    <!-- o Giz é uma demo do portfólio: a marca "vm" e o menu levam de volta ao vgmelo.tech -->
+    <a class="home" href="https://vgmelo.tech/" title="Voltar ao portfólio de Victor Melo">
+      <span class="vm"><img src="/victor-112.jpg" width="28" height="28" alt="" decoding="async" /></span>
+      <span class="home-l">Victor Melo</span>
+      <span class="sr-only">Portfólio de Victor Melo</span>
+    </a>
+    <span class="sep" aria-hidden="true">/</span>
+    <svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true">
       <rect width="32" height="32" rx="7" class="logo-bg" />
       <path d="M7 22l6-6 4 3 8-9" class="logo-line" />
       <circle cx="25" cy="10" r="2.2" class="logo-dot" />
@@ -87,6 +109,9 @@
     <strong>Giz</strong>
     <span class="tag">AutoML no navegador · open source</span>
   </div>
+  <nav class="site" aria-label="vgmelo.tech">
+    {#each SITE as l (l.href)}<a href={l.href}>{l.label}</a>{/each}
+  </nav>
   <div class="right">
     {#if assistant.sendsData}
       <span
@@ -96,7 +121,7 @@
         <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"
           ><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6l7-3z" class="shield" /></svg
         >
-        Assistente online: resumos saem do navegador
+        <span class="pvl">Assistente online: resumos saem do navegador</span>
       </span>
     {:else}
       <span
@@ -109,31 +134,40 @@
             class="check"
           /></svg
         >
-        O arquivo não sai do navegador
+        <span class="pvl">O arquivo não sai do navegador</span>
       </span>
     {/if}
     <span class="py" class:ok={app.mlReady} class:err={app.stage === "error"} title={app.status}>
       {#if app.stage === "error"}
-        Python com erro
+        <span class="dot"></span> <span class="pyl">Python com erro</span>
       {:else if app.mlReady}
-        <span class="dot"></span> Python pronto
+        <span class="dot"></span> <span class="pyl">Python pronto</span>
       {:else if app.pyReady}
-        <span class="spinner"></span> Carregando modelos…
+        <span class="spinner"></span> <span class="pyl">Carregando modelos…</span>
       {:else}
-        <span class="spinner"></span> Carregando Python…
+        <span class="spinner"></span> <span class="pyl">Carregando Python…</span>
       {/if}
     </span>
-    <button class="tb-btn assist-btn" class:on={assistant.open} onclick={toggleAssistant} aria-expanded={assistant.open} aria-controls={assistant.open ? "assistente" : undefined}>
+    <button class="tb-btn assist-btn" class:on={assistant.open} onclick={toggleAssistant} aria-label="Assistente" aria-expanded={assistant.open} aria-controls={assistant.open ? "assistente" : undefined}>
       <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"
         ><path d="M4 5h16v11H9l-5 4V5z" class="moon" /></svg
       >
-      Assistente
+      <span class="al">Assistente</span>
     </button>
     <button class="tb-btn icon" onclick={toggleTheme} aria-label="Alternar tema claro/escuro">
       <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"
         ><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z" class="moon" /></svg
       >
     </button>
+    <details class="site-menu" bind:this={menuEl}>
+      <summary class="tb-btn icon" aria-label="Menu do portfólio">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" class="moon" /></svg>
+      </summary>
+      <nav class="sheet" aria-label="vgmelo.tech">
+        <a class="back" href="https://vgmelo.tech/">← Portfólio de Victor Melo</a>
+        {#each SITE as l (l.href)}<a href={l.href}>{l.label}</a>{/each}
+      </nav>
+    </details>
   </div>
 </header>
 
@@ -255,6 +289,116 @@
     font-weight: 750;
     letter-spacing: -0.02em;
   }
+  .home {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--console-ink);
+    text-decoration: none;
+    font-weight: 650;
+    font-size: 0.86rem;
+    border-radius: 8px;
+  }
+  .home:hover .home-l {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .home:focus-visible,
+  nav.site a:focus-visible,
+  .sheet a:focus-visible,
+  .site-menu summary:focus-visible {
+    outline: 2px solid var(--console-focus);
+    outline-offset: 2px;
+  }
+  .vm {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+  }
+  .vm img {
+    display: block;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 0 0 1px var(--console-line);
+  }
+  .vm::after {
+    content: "";
+    position: absolute;
+    right: -3px;
+    bottom: -3px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent-fill);
+    border: 2px solid var(--console);
+  }
+  .sep {
+    color: var(--console-muted);
+    font-weight: 300;
+    font-size: 1.2rem;
+  }
+  nav.site {
+    display: flex;
+    gap: 2px;
+    margin-right: auto;
+    margin-left: 8px;
+  }
+  nav.site a {
+    color: var(--console-muted);
+    text-decoration: none;
+    font-size: 0.84rem;
+    font-weight: 550;
+    padding: 6px 10px;
+    border-radius: 7px;
+  }
+  nav.site a:hover {
+    color: var(--console-ink);
+    background: color-mix(in srgb, var(--console-ink) 8%, transparent);
+  }
+  .site-menu {
+    display: none;
+    position: relative;
+  }
+  .site-menu summary {
+    list-style: none;
+  }
+  .site-menu summary::-webkit-details-marker {
+    display: none;
+  }
+  .sheet {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    z-index: 60;
+    min-width: 230px;
+    display: grid;
+    padding: 6px;
+    border-radius: 10px;
+    background: var(--console);
+    border: 1px solid var(--console-line);
+    box-shadow: var(--shadow-lift);
+  }
+  .sheet a {
+    color: var(--console-ink);
+    text-decoration: none;
+    padding: 10px 12px;
+    border-radius: 7px;
+    font-weight: 550;
+  }
+  .sheet a:hover {
+    background: color-mix(in srgb, var(--console-ink) 8%, transparent);
+  }
+  .sheet .back {
+    color: var(--console-focus);
+    border-bottom: 1px solid var(--console-line);
+    border-radius: 7px 7px 0 0;
+    margin-bottom: 4px;
+  }
   .tag {
     font-size: 0.78rem;
     color: var(--console-muted);
@@ -313,7 +457,7 @@
       border-color 0.15s;
   }
   .tb-btn:hover {
-    background: rgb(255 255 255 / 8%);
+    background: color-mix(in srgb, var(--console-ink) 8%, transparent);
     border-color: var(--console-muted);
   }
   .tb-btn:focus-visible {
@@ -624,16 +768,54 @@
     .s {
       display: inline;
     }
-    .tag {
+    .tag,
+    nav.site,
+    .home-l {
       display: none;
+    }
+    .site-menu {
+      display: block;
     }
     .top {
       padding: 0 12px;
     }
   }
-  @media (max-width: 640px) {
-    .privacy {
+  @media (max-width: 1240px) {
+    .tag {
       display: none;
+    }
+  }
+  @media (max-width: 900px) {
+    /* no celular o status vira só ícone (ponto/spinner) e o selo só o escudo, para não cobrir a marca */
+    .pyl,
+    .pvl {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    .privacy {
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      justify-content: center;
+    }
+    .brand {
+      flex: none;
+    }
+  }
+  @media (max-width: 640px) {
+  }
+  @media (max-width: 480px) {
+    .al {
+      display: none;
+    }
+    .assist-btn {
+      width: 34px;
+      padding: 0;
+      justify-content: center;
     }
   }
 </style>

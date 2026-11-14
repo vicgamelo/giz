@@ -308,8 +308,16 @@
     color: var(--muted);
     letter-spacing: 0;
   }
-  .strip .hot dd {
-    color: var(--warn);
+  /* número em tinta neutra com um ponto âmbar: âmbar grande ficava perto demais do laranja do botão */
+  .strip .hot dd::before {
+    content: "";
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    margin-right: 8px;
+    border-radius: 50%;
+    background: var(--warn);
+    vertical-align: 0.2em;
   }
   .summary {
     display: flex;

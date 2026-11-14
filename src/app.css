@@ -1,41 +1,43 @@
-/* Console de ML: neutros frios, azul de ação e barra do console escura (inspirado no SageMaker). */
+/* Mesma paleta do vgmelo.tech: grafite quente, acento laranja "brasa"; barra do console em grafite escuro. */
 :root {
-  --bg: #f3f5f8;
-  --panel: #ffffff;
-  --panel-2: #f7f9fb;
-  --ink: #0f1722;
-  --muted: #566272;
-  --line: #e1e6ec;
-  --line-2: #c8d0da;
-  /* Acento de texto/borda/foco e preenchimento de ação (azul), com tinta branca. */
-  --accent: #1a5fc9;
-  --accent-fill: #1f66d6;
+  --bg: #f6f3ee;
+  --panel: #fffdfa;
+  --panel-2: #faf7f2;
+  --ink: #1a1714;
+  --muted: #625b52;
+  --line: #e6e0d6;
+  --line-2: #d3cbbe;
+  /* Acento de texto/borda/foco e preenchimento de ação (laranja), com tinta branca. */
+  --accent: #b3470f;
+  --accent-fill: #c2410c;
   --accent-ink: #ffffff;
-  --accent-soft: #e8f0fc;
-  --accent-2: #1a5fc9;
-  --chalk: #0f1b2a;
-  --warn: #9a4b00;
-  --warn-soft: #fdf0dd;
-  --danger: #c0281b;
-  --danger-soft: #fde7e4;
-  --info-soft: #e6f2fb;
-  --info: #0b6aa8;
-  --good: #1b7f4c;
-  --bar: #1f66d6;
-  --bar-2: #c3ccd8;
-  --neg: #2a6fdb;
-  --pos: #e0662a;
+  --accent-soft: #fbe6da;
+  --accent-2: #b3470f;
+  --chalk: #1c1a18;
+  /* alertas: âmbar, carmim e índigo, longe do laranja do acento */
+  --warn: #8a5600;
+  --warn-soft: #fbf0d6;
+  --danger: #b5193f;
+  --danger-soft: #fce4ea;
+  --info-soft: #e6e8fb;
+  --info: #3d4cc9;
+  --good: #1e7a46;
+  --bar: #c2410c;
+  --bar-2: #d8cfc2;
+  --neg: #4353d6;
+  --pos: #d9541a;
   --c3: #7b5cd6;
-  --console: #0f1b2a;
-  --console-ink: #eef3f8;
-  --console-muted: #9fb0c3;
-  --console-line: #2a3b50;
-  --console-good: #6fdca0;
-  --console-warn: #f7b56b;
-  --console-danger: #ff9187;
-  --console-focus: #7fb3ff;
-  --shadow: 0 1px 2px rgb(15 27 42 / 6%), 0 1px 3px rgb(15 27 42 / 4%);
-  --shadow-lift: 0 2px 6px rgb(15 27 42 / 8%), 0 18px 40px -18px rgb(15 27 42 / 28%);
+  /* barra superior segue o tema, como o cabeçalho do site: creme no claro, grafite no escuro */
+  --console: #fffdfa;
+  --console-ink: #1a1714;
+  --console-muted: #625b52;
+  --console-line: #e6e0d6;
+  --console-good: #1e7a46;
+  --console-warn: #8a5600;
+  --console-danger: #b5193f;
+  --console-focus: #b3470f;
+  --shadow: 0 1px 2px rgb(40 30 20 / 5%), 0 1px 3px rgb(40 30 20 / 4%);
+  --shadow-lift: 0 2px 6px rgb(40 30 20 / 7%), 0 18px 40px -18px rgb(40 30 20 / 26%);
   --radius: 12px;
   --radius-sm: 8px;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -47,33 +49,45 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0b121c;
-    --panel: #141e2b;
-    --panel-2: #101925;
-    --ink: #e8eef5;
-    --muted: #9aa8b8;
-    --line: #233245;
-    --line-2: #34465c;
-    --accent: #7cb1ff;
-    --accent-fill: #5b9cf6;
-    --accent-ink: #07111d;
-    --accent-soft: #172d4b;
-    --accent-2: #7cb1ff;
-    --chalk: #070c13;
-    --warn: #f5a35c;
-    --warn-soft: #3a2914;
-    --danger: #ff8b80;
-    --danger-soft: #3d1c1a;
-    --info-soft: #12304a;
-    --info: #7cc4f0;
-    --good: #5fd39a;
-    --bar: #6ea8ff;
-    --bar-2: #2f4157;
-    --neg: #6ea8ff;
-    --pos: #f59a5b;
+    --bg: #121110;
+    --panel: #1c1a18;
+    --panel-2: #22201d;
+    --ink: #f3efe8;
+    --muted: #a8a196;
+    --line: #2d2a26;
+    --line-2: #3d3933;
+    --accent: #ff7a45;
+    --accent-fill: #ff7a45;
+    --accent-ink: #121110;
+    --accent-soft: #3a1f12;
+    --accent-2: #ff7a45;
+    --chalk: #0c0b0a;
+    --warn: #f0b14a;
+    --warn-soft: #382a12;
+    --danger: #ff7a93;
+    --danger-soft: #3d1820;
+    --info-soft: #1f2340;
+    --info: #9aaaff;
+    --good: #6fd69b;
+    --bar: #ff7a45;
+    --bar-2: #3d3933;
+    --neg: #8ea2ff;
+    --pos: #ff8a50;
     --c3: #b39cff;
-    --console: #070c13;
-    --console-line: #1f2d3f;
+    --console: #0c0b0a;
+  --console-ink: #f3efe8;
+  --console-muted: #b3ab9f;
+  --console-good: #6fd69b;
+  --console-warn: #f0b14a;
+  --console-danger: #ff8a9a;
+  --console-focus: #ff9a6b;
+    --console-ink: #f3efe8;
+    --console-muted: #b3ab9f;
+    --console-good: #6fd69b;
+    --console-warn: #f0b14a;
+    --console-danger: #ff8a9a;
+    --console-focus: #ff9a6b;
+    --console-line: #2d2a26;
     --shadow: 0 1px 0 rgb(255 255 255 / 3%) inset, 0 1px 3px rgb(0 0 0 / 40%);
     --shadow-lift: 0 1px 0 rgb(255 255 255 / 4%) inset, 0 24px 48px -20px rgb(0 0 0 / 80%);
     color-scheme: dark;
@@ -81,33 +95,33 @@
 }
 
 :root[data-theme="dark"] {
-  --bg: #0b121c;
-  --panel: #141e2b;
-  --panel-2: #101925;
-  --ink: #e8eef5;
-  --muted: #9aa8b8;
-  --line: #233245;
-  --line-2: #34465c;
-  --accent: #7cb1ff;
-  --accent-fill: #5b9cf6;
-  --accent-ink: #07111d;
-  --accent-soft: #172d4b;
-  --accent-2: #7cb1ff;
-  --chalk: #070c13;
-  --warn: #f5a35c;
-  --warn-soft: #3a2914;
-  --danger: #ff8b80;
-  --danger-soft: #3d1c1a;
-  --info-soft: #12304a;
-  --info: #7cc4f0;
-  --good: #5fd39a;
-  --bar: #6ea8ff;
-  --bar-2: #2f4157;
-  --neg: #6ea8ff;
-  --pos: #f59a5b;
+  --bg: #121110;
+  --panel: #1c1a18;
+  --panel-2: #22201d;
+  --ink: #f3efe8;
+  --muted: #a8a196;
+  --line: #2d2a26;
+  --line-2: #3d3933;
+  --accent: #ff7a45;
+  --accent-fill: #ff7a45;
+  --accent-ink: #121110;
+  --accent-soft: #3a1f12;
+  --accent-2: #ff7a45;
+  --chalk: #0c0b0a;
+  --warn: #f0b14a;
+  --warn-soft: #382a12;
+  --danger: #ff7a93;
+  --danger-soft: #3d1820;
+  --info-soft: #1f2340;
+  --info: #9aaaff;
+  --good: #6fd69b;
+  --bar: #ff7a45;
+  --bar-2: #3d3933;
+  --neg: #8ea2ff;
+  --pos: #ff8a50;
   --c3: #b39cff;
-  --console: #070c13;
-  --console-line: #1f2d3f;
+  --console: #0c0b0a;
+  --console-line: #2d2a26;
   --shadow: 0 1px 0 rgb(255 255 255 / 3%) inset, 0 1px 3px rgb(0 0 0 / 40%);
   --shadow-lift: 0 1px 0 rgb(255 255 255 / 4%) inset, 0 24px 48px -20px rgb(0 0 0 / 80%);
   color-scheme: dark;
@@ -326,6 +340,12 @@ button {
   background: var(--accent-soft);
   border-color: transparent;
   color: var(--accent);
+}
+
+.chip.good {
+  background: color-mix(in srgb, var(--good) 13%, var(--panel));
+  border-color: transparent;
+  color: var(--good);
 }
 
 .chip.warn {
