@@ -96,3 +96,33 @@ export function rocArea(fpr: number[], tpr: number[]): number {
   for (let i = 1; i < fpr.length; i++) a += ((fpr[i] - fpr[i - 1]) * (tpr[i] + tpr[i - 1])) / 2;
   return a;
 }
+
+/**
+ * Corte de probabilidade cujo ponto na curva ROC (falsos positivos, recall) fica mais perto de (fpr, tpr): é o que o
+ * clique na curva escolhe. Varre os mesmos cortes do controle deslizante (0,05 a 0,95, passo 0,01).
+ */
+export function thresholdNear(y: number[], p: number[], fpr: number, tpr: number, min = 0.05, max = 0.95, step = 0.01) {
+  const neg = y.filter((v) => v !== 1).length || 1;
+  let best = { threshold: 0.5, fpr: 0, tpr: 0 };
+  let bd = Infinity;
+  for (let k = 0; min + k * step <= max + 1e-9; k++) {
+    const t = Math.round((min + k * step) * 100) / 100;
+    const c = confusionAt(y, p, t);
+    const f = c.matrix[0][1] / neg;
+    const d = (f - fpr) ** 2 + (c.recall - tpr) ** 2;
+    if (d < bd - 1e-12) {
+      bd = d;
+      best = { threshold: t, fpr: f, tpr: c.recall };
+    }
+  }
+  return best;
+}
+
+/** Posição de uma dica perto do cursor, sem sair da tela (vira para o outro lado quando não cabe). */
+export function tipPosition(x: number, y: number, w: number, h: number, vw: number, vh: number, gap = 14) {
+  let left = x + gap;
+  let top = y + gap;
+  if (left + w > vw - 8) left = x - gap - w;
+  if (top + h > vh - 8) top = y - gap - h;
+  return { left: Math.max(8, left), top: Math.max(8, top) };
+}

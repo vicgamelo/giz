@@ -1,6 +1,7 @@
 <script lang="ts">
   import { app } from "../lib/state.svelte";
-  import { confusionAt, linear, polyline, ticks } from "../lib/charts";
+  import { confusionAt, linear, polyline, thresholdNear, ticks } from "../lib/charts";
+  import { hideTip, showTip } from "../lib/tip";
   import { fmtCell, fmtFixed, fmtInt, fmtMetric, fmtNum, fmtPct, metricLabel, METRICS, PROBLEMS } from "../lib/format";
   import DataTable from "./DataTable.svelte";
   import HBars from "./HBars.svelte";
@@ -24,12 +25,43 @@
   const cmMax = $derived(Math.max(...matrix.flat(), 1));
 
   // ROC
-  const W = 300;
+  const W = 440;
   const H = 300;
-  const P = 34;
+  const P = 46;
   const sx = linear(0, 1, P, W - 8);
   const sy = linear(0, 1, H - P, 8);
   const roc = $derived(ev.roc ? polyline(ev.roc.fpr, ev.roc.tpr, sx, sy) : "");
+  // ROC interativa: passar o mouse mostra o corte daquele ponto; clicar escolhe o corte.
+  let hover = $state<{ threshold: number; fpr: number; tpr: number } | null>(null);
+  function rocAt(e: MouseEvent) {
+    if (!binary || !ev.scores) return null;
+    const svg = e.currentTarget as SVGSVGElement;
+    const r = svg.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width) * W;
+    const y = ((e.clientY - r.top) / r.height) * H;
+    const fpr = (x - P) / (W - 8 - P);
+    const tpr = (H - P - y) / (H - P - 8);
+    if (fpr < -0.05 || fpr > 1.05 || tpr < -0.05 || tpr > 1.05) return null;
+    return thresholdNear(ev.scores.y, ev.scores.p, fpr, tpr);
+  }
+  function rocMove(e: MouseEvent) {
+    hover = rocAt(e);
+    if (hover)
+      showTip(
+        `corte ${fmtNum(hover.threshold, 2)}\nrecall ${fmtPct(hover.tpr)} · falsos positivos ${fmtPct(hover.fpr)}\nclique para usar este corte`,
+        e.clientX,
+        e.clientY,
+      );
+    else hideTip();
+  }
+  function rocClick(e: MouseEvent) {
+    const h = rocAt(e);
+    if (h) threshold = h.threshold;
+  }
+  function rocLeave() {
+    hover = null;
+    hideTip();
+  }
   const fprAt = $derived(cm ? cm.matrix[0][1] / Math.max(cm.matrix[0][0] + cm.matrix[0][1], 1) : 0);
 
   // resíduos
@@ -71,7 +103,15 @@
 
   const exp = $derived(app.explanation);
   const effectFmt = (v: number) =>
-    r.problem === "regression" ? (v > 0 ? "+" : "") + fmtNum(v, 3) : (v > 0 ? "+" : "") + fmtNum(v * 100, 1) + " p.p.";
+    r.problem === "regression" ? (v > 0 ? "+" : "") + fmtNum(v, 3) : (v > 0 ? "+" : "") + fmtFixed(v * 100, 1) + " p.p.";
+  const allZero = $derived(!exp || exp.contributions.slice(0, 14).every((c) => effectFmt(c.effect) === effectFmt(0)));
+  // "E se": as 7 variáveis que mais pesam ficam à vista; o resto (e as de centenas de valores) vai para "outras".
+  const mainCols = $derived.by(() => {
+    const ok = (c: string) => sample.columns.includes(c) && (levels[c]?.length ?? 0) <= 50;
+    const top = ev.importance.map((d) => d.column).filter(ok).slice(0, 7);
+    return top.length ? top : sample.columns.slice(0, 7);
+  });
+  const restCols = $derived(sample.columns.filter((c) => !mainCols.includes(c)));
   const levels = $derived.by(() => {
     const out: Record<string, string[]> = {};
     for (const c of r.features.categorical) {
@@ -147,7 +187,19 @@
         <h3>Curva ROC</h3>
         <span class="small muted">AUC {fmtNum(ev.metrics.roc_auc, 3)}</span>
       </div>
-      <svg viewBox="0 0 {W} {H}" class="plot" role="img" aria-label="Curva ROC">
+      <p class="ylab-m small muted" aria-hidden="true">↑ verdadeiros positivos</p>
+      <!-- o clique na curva é atalho de mouse; pelo teclado o mesmo corte se escolhe no controle deslizante ao lado -->
+      <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
+      <svg
+        viewBox="0 0 {W} {H}"
+        class="plot"
+        class:pickable={!!cm}
+        role="img"
+        aria-label="Curva ROC"
+        onpointermove={rocMove}
+        onpointerleave={rocLeave}
+        onclick={rocClick}
+      >
         {#each ticks(0, 1, 4) as t (t)}
           <line x1={sx(t)} x2={sx(t)} y1={sy(0)} y2={sy(1)} class="grid" />
           <line x1={sx(0)} x2={sx(1)} y1={sy(t)} y2={sy(t)} class="grid" />
@@ -155,10 +207,16 @@
           <text x={P - 6} y={sy(t) + 4} text-anchor="end">{fmtNum(t, 2)}</text>
         {/each}
         <line x1={sx(0)} y1={sy(0)} x2={sx(1)} y2={sy(1)} class="diag" />
+        <polygon points="{roc} {sx(1)},{sy(0)} {sx(0)},{sy(0)}" class="area" />
         <polyline points={roc} class="curve" />
-        {#if cm}<circle cx={sx(fprAt)} cy={sy(cm.recall)} r="5" class="pt" />{/if}
+        {#if hover}
+          <line x1={sx(hover.fpr)} x2={sx(hover.fpr)} y1={sy(0)} y2={sy(hover.tpr)} class="guide" />
+          <line x1={sx(0)} x2={sx(hover.fpr)} y1={sy(hover.tpr)} y2={sy(hover.tpr)} class="guide" />
+          <circle cx={sx(hover.fpr)} cy={sy(hover.tpr)} r="5" class="ghost" />
+        {/if}
+        {#if cm}<circle cx={sx(fprAt)} cy={sy(cm.recall)} r="6" class="pt" />{/if}
         <text x={(P + W) / 2} y={H - 2} text-anchor="middle">falsos positivos</text>
-        <text x="10" y={H / 2} transform="rotate(-90 10 {H / 2})" text-anchor="middle">verdadeiros positivos</text>
+        <text class="ylab" x="12" y={H / 2} transform="rotate(-90 12 {H / 2})" text-anchor="middle">verdadeiros positivos</text>
       </svg>
     </div>
   {/if}
@@ -178,7 +236,7 @@
           <circle cx={rx(a)} cy={ry(res.pred[i])} r="2" class="dot" />
         {/each}
         <text x={(P + W) / 2} y={H - 2} text-anchor="middle">real</text>
-        <text x="10" y={H / 2} transform="rotate(-90 10 {H / 2})" text-anchor="middle">previsto</text>
+        <text x="12" y={H / 2} transform="rotate(-90 12 {H / 2})" text-anchor="middle">previsto</text>
       </svg>
     </div>
     {#if ev.error_hist}
@@ -199,6 +257,8 @@
     items={ev.importance.slice(0, 15).map((d) => ({ label: d.column, value: d.importance, sub: `± ${fmtFixed(d.std, 3)}` }))}
     format={(v) => fmtFixed(v, 3)}
     highlight={ev.importance[0]?.column}
+    foldZeros
+    minShown={5}
   />
 </div>
 
@@ -208,51 +268,30 @@
     <span class="small muted">Escolha uma linha do holdout ou mude os valores e veja a previsão mudar.</span>
   </div>
   <div class="explain">
-    <div class="formcol">
-      {#if exp}
-        <div class="verdict">
-          {#if r.problem === "regression"}
-            <span class="small muted">previsão</span>
-            <b class="big num">{fmtNum(exp.value, 3)}</b>
-          {:else}
-            <span class="small muted">previsão</span>
-            <b class="big">{exp.label}</b>
-            {#if binary && exp.positive}
-              <span class="small">probabilidade de “{exp.positive}”: <b>{fmtPct(exp.value)}</b></span>
-              <div class="gauge"><div class="gfill" style:width="{exp.value * 100}%"></div></div>
-            {/if}
+    {#if exp}
+      <div class="verdict">
+        {#if r.problem === "regression"}
+          <span class="small muted">previsão</span>
+          <b class="big num">{fmtNum(exp.value, 3)}</b>
+        {:else}
+          <span class="small muted">previsão</span>
+          <b class="big">{exp.label}</b>
+          {#if binary && exp.positive}
+            <span class="small">probabilidade de “{exp.positive}”: <b>{fmtPct(exp.value)}</b></span>
+            <div class="gauge"><div class="gfill" style:width="{exp.value * 100}%"></div></div>
           {/if}
-          <span class="small muted">real: <b>{sample.actual[selected] ?? "–"}</b></span>
-        </div>
-      {/if}
-      <form
-        class="whatif"
-        onsubmit={(e) => {
-          e.preventDefault();
-          whatIf();
-        }}
-      >
-        {#each sample.columns as c (c)}
-          <label class="field">
-            <span>{c}</span>
-            {#if levels[c]}
-              <select bind:value={form[c]} onchange={whatIf}>
-                <option value="">vazio</option>
-                {#each levels[c] as l (l)}<option value={l}>{l}</option>{/each}
-              </select>
-            {:else}
-              <input type="text" inputmode="decimal" bind:value={form[c]} onchange={whatIf} />
-            {/if}
-          </label>
-        {/each}
-      </form>
-    </div>
-    <div class="contrib">
-      {#if exp}
-        <p class="small muted">
-          Efeito de cada variável: quanto a {r.problem === "regression" ? "previsão" : "probabilidade"} muda em relação a
-          trocar só ela pelo valor típico do treino (mediana ou moda). Laranja empurra para cima, azul para baixo.
-        </p>
+        {/if}
+        <span class="small muted">real: <b>{sample.actual[selected] ?? "–"}</b></span>
+      </div>
+      <div class="contrib">
+        {#if allZero}
+          <p class="small muted">Nenhuma variável sozinha muda esta previsão: trocar qualquer uma pelo valor típico deixa a probabilidade igual.</p>
+        {:else}
+          <p class="small muted">
+            Efeito de cada variável: quanto a {r.problem === "regression" ? "previsão" : "probabilidade"} muda em relação a
+            trocar só ela pelo valor típico do treino (mediana ou moda). Laranja empurra para cima, azul para baixo.
+          </p>
+        {/if}
         <HBars
           items={exp.contributions.slice(0, 14).map((c) => ({
             label: `${c.column} = ${c.value == null ? "vazio" : fmtCell(c.value)}`,
@@ -261,9 +300,43 @@
           }))}
           format={effectFmt}
           signColors
+          foldZeros
           labelWidth={220}
         />
+      </div>
+    {/if}
+    <form
+      class="whatif"
+      onsubmit={(e) => {
+        e.preventDefault();
+        whatIf();
+      }}
+    >
+      {#snippet field(c: string)}
+        <label class="field">
+          <span>{c}</span>
+          {#if levels[c]}
+            <select bind:value={form[c]} onchange={whatIf}>
+              <option value="">vazio</option>
+              {#each levels[c] as l (l)}<option value={l}>{l}</option>{/each}
+            </select>
+          {:else}
+            <input type="text" inputmode="decimal" bind:value={form[c]} onchange={whatIf} />
+          {/if}
+        </label>
+      {/snippet}
+      <p class="wi-title small muted">E se… (as variáveis que mais pesam)</p>
+      {#each mainCols as c (c)}{@render field(c)}{/each}
+      {#if restCols.length}
+        <details class="wi-rest">
+          <summary class="small">Outras {restCols.length} variáveis</summary>
+          <div class="wi-grid">
+            {#each restCols as c (c)}{@render field(c)}{/each}
+          </div>
+        </details>
       {/if}
+    </form>
+    <div class="holdout">
       <h4 class="small muted pick">Linhas do holdout</h4>
       <DataTable
         table={sample}
@@ -298,7 +371,17 @@
   .charts .panel + .panel {
     margin-top: 0;
   }
+  /* os dois cartões com a mesma altura; a matriz cresce para ocupar o seu */
+  .charts > .panel {
+    display: flex;
+    flex-direction: column;
+  }
+  .charts .plot {
+    margin: auto;
+  }
   .cm {
+    flex: 1;
+    grid-auto-rows: auto;
     display: grid;
     gap: 4px;
   }
@@ -314,26 +397,33 @@
   .cell {
     display: grid;
     place-items: center;
+    align-content: center;
+    min-height: 92px;
     padding: 14px 6px;
     border-radius: 8px;
-    background: color-mix(in srgb, var(--neg) calc(var(--a) * 55%), var(--panel-2));
+    background: color-mix(in srgb, var(--neg) calc(var(--a) * 40%), var(--panel-2));
     border: 1px solid var(--line);
+    color: var(--ink);
   }
   .cell.diag {
-    background: color-mix(in srgb, var(--accent) calc(var(--a) * 70%), var(--panel-2));
+    background: color-mix(in srgb, var(--accent-fill) calc(var(--a) * 42%), var(--panel-2));
+    border-color: color-mix(in srgb, var(--accent-fill) 50%, var(--line));
   }
   .cell b {
-    font-size: 1.2rem;
+    font-family: var(--display);
+    font-size: 1.35rem;
+    font-variant-numeric: tabular-nums;
   }
   .cell small {
-    color: var(--muted);
+    color: inherit;
+    opacity: 0.78;
   }
   .thr {
     margin-top: 12px;
   }
   .plot {
     width: 100%;
-    max-width: 360px;
+    max-width: 520px;
     height: auto;
     display: block;
     margin: 0 auto;
@@ -345,11 +435,28 @@
     stroke: var(--line-2);
     stroke-dasharray: 4 4;
   }
+  .area {
+    fill: color-mix(in srgb, var(--accent-fill) 14%, transparent);
+  }
   .curve {
     fill: none;
     stroke: var(--accent);
     stroke-width: 2.5;
     stroke-linejoin: round;
+  }
+  .pickable {
+    cursor: crosshair;
+  }
+  .guide {
+    stroke: var(--accent);
+    stroke-dasharray: 3 3;
+    opacity: 0.7;
+  }
+  .ghost {
+    fill: var(--panel);
+    stroke: var(--accent);
+    stroke-width: 2;
+    pointer-events: none;
   }
   .pt {
     fill: var(--pos);
@@ -360,10 +467,29 @@
     fill: var(--accent);
     opacity: 0.45;
   }
+  /* veredito e efeitos lado a lado; o "e se" em grade larga; as linhas do holdout embaixo */
   .explain {
     display: grid;
-    grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
-    gap: 18px;
+    grid-template-columns: minmax(220px, 300px) minmax(0, 1fr);
+    grid-template-areas:
+      "verdict contrib"
+      "form form"
+      "rows rows";
+    gap: 18px 24px;
+  }
+  .verdict {
+    grid-area: verdict;
+    align-self: start;
+  }
+  .contrib {
+    grid-area: contrib;
+  }
+  .whatif {
+    grid-area: form;
+  }
+  .holdout {
+    grid-area: rows;
+    min-width: 0;
   }
   .verdict {
     display: grid;
@@ -389,13 +515,50 @@
     background: var(--pos);
     transition: width 0.3s;
   }
+  .ylab-m {
+    display: none;
+    margin: 0 0 4px;
+  }
+  .wi-title,
+  .wi-rest {
+    grid-column: 1 / -1;
+    margin: 0;
+  }
+  .wi-rest summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .wi-grid {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 10px 12px;
+  }
+  @media (max-width: 560px) {
+    .whatif,
+    .wi-grid {
+      grid-template-columns: 1fr 1fr !important;
+    }
+    .plot text {
+      font-size: 15px;
+    }
+    /* no celular o rótulo girado colidia com os ticks maiores: vira legenda acima do gráfico */
+    .plot .ylab {
+      display: none;
+    }
+    .ylab-m {
+      display: block !important;
+    }
+  }
   .whatif {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    max-height: 520px;
-    overflow: auto;
-    padding-right: 4px;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 10px 12px;
+    padding: 14px;
+    border-radius: 10px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
   }
   .whatif .field span {
     overflow: hidden;
@@ -411,6 +574,7 @@
   @media (max-width: 900px) {
     .explain {
       grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: "verdict" "contrib" "form" "rows";
     }
   }
 </style>
