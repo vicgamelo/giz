@@ -207,6 +207,20 @@ export function derivedColumns(s: Derivable): Map<string, string> {
   return out;
 }
 
+/** Troca `name` só quando ele aparece inteiro: `x_1` dentro de `max_1` (outra coluna) não é ocorrência dele. */
+function replaceWhole(text: string, name: string, by: string): string {
+  const word = /[\p{L}\p{N}_]/u;
+  let out = "";
+  let from = 0;
+  for (let at = text.indexOf(name); at !== -1; at = text.indexOf(name, from)) {
+    const end = at + name.length;
+    const inside = (at > 0 && word.test(text[at - 1])) || (end < text.length && word.test(text[end]));
+    out += text.slice(from, at) + (inside ? name : by);
+    from = end;
+  }
+  return out + text.slice(from);
+}
+
 /**
  * Troca no texto qualquer nome de coluna one-hot (alertas, importância, ações, mensagens antigas da conversa).
  * Procura o nome como veio e como `safe` o deixaria, com e sem o corte de tamanho.
@@ -217,7 +231,7 @@ export function maskDerived(text: string, s: Derivable): string {
     const masked = `${safe(source)}_*`;
     for (const form of new Set([name, sanitize(name), safe(name)])) {
       // Nome tão comprido que o corte de `safe` já tirou a categoria: não há o que trocar (e trocar repetiria o `_*`).
-      if (!masked.startsWith(form)) text = text.replaceAll(form, masked);
+      if (!masked.startsWith(form)) text = replaceWhole(text, form, masked);
     }
   }
   return text;

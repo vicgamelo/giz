@@ -103,6 +103,19 @@ describe("resumo para o assistente", () => {
     }
   });
 
+  it("a máscara não estraga o nome de outra coluna que contém o nome one-hot", () => {
+    const col = (name: string) => ({ ...credito.rawProfile.columns[2], name });
+    const steps: Step[] = [{ op: "encode", columns: ["x"], method: "onehot" }];
+    const reports: StepReport[] = [{ index: 0, op: "encode", label: "x", added: ["x_1", "x_2"], removed: ["x"] }];
+    const alert = { code: "outliers", column: "max_1", severity: "info" as const, message: "'max_1' tem 9 valores fora de 1,5×IQR; 'x_1' tem um valor só." };
+    const s = snapshot(credito, "profile", { rawColumns: ["x", "max_1", "alvo"], steps, reports, target: null, targetInfo: null, result: null, profile: { ...credito.rawProfile, columns: [col("max_1"), col("x_1"), col("x_2"), col("alvo")], alerts: [alert] } });
+    const text = buildContext(s, { maxChars: 50_000 });
+    expect(text).toContain("'max_1' tem 9 valores fora de 1,5×IQR; 'x_*' tem um valor só.");
+    expect(text).toMatch(/^- max_1: número/m);
+    expect(text).not.toContain("max_*");
+    expect(text).not.toMatch(/\bx_1\b|\bx_2\b/);
+  });
+
   it("colunas de data criadas pela receita mantêm o nome (o sufixo não vem dos dados)", () => {
     const steps: Step[] = [{ op: "parse_dates", columns: ["data_pedido"], parts: ["year", "month"], drop: true }];
     const reports: StepReport[] = [{ index: 0, op: "parse_dates", label: "x", added: ["data_pedido_ano", "data_pedido_mes"], removed: ["data_pedido"] }];
