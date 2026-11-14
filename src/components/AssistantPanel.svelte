@@ -76,7 +76,7 @@
 <aside class="assist" aria-label="Assistente" tabindex="-1" bind:this={panel}>
   <header>
     <div class="title">
-      <strong>Assistente</strong>
+      <strong class="name"><span class="dot" aria-hidden="true"></span>Assistente</strong>
       {#if a.sendsData}
         <span class="chip warn" title="Suas perguntas e um resumo do passo vão ao vgmelo.tech">online · resumos saem</span>
       {:else if a.kind === "online"}
@@ -85,7 +85,7 @@
         <span class="chip accent" title="O modelo roda neste navegador; nada é enviado">neste navegador</span>
       {/if}
     </div>
-    <button class="btn ghost sm" onclick={() => (a.open = false)} aria-label="Fechar o assistente">✕</button>
+    <button class="btn ghost sm close" onclick={() => (a.open = false)} aria-label="Fechar o assistente">✕</button>
   </header>
 
   <div class="engines" role="group" aria-label="Onde o assistente roda">
@@ -100,16 +100,19 @@
   {#if a.kind === "local" && !ready}
     <div class="setup">
       {#if a.local.state === "unknown" || a.local.state === "checking"}
-        <p class="muted"><span class="spinner"></span> Conferindo o navegador…</p>
+        <p class="muted wait"><span class="spinner"></span> Conferindo o navegador…</p>
       {:else if a.local.state === "unsupported"}
-        <p><strong>O assistente local não roda neste navegador.</strong></p>
+        <span class="st-icon warn" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><path d="m5.6 5.6 12.8 12.8" /></svg></span>
+        <p class="st-title">O assistente local não roda neste navegador.</p>
         <p class="muted small">{a.local.message}</p>
         <button class="btn sm" onclick={() => a.choose("online")}>Usar o modo online</button>
       {:else if a.local.state === "unpublished"}
-        <p><strong>O modelo local não foi publicado neste servidor.</strong></p>
+        <span class="st-icon warn" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><path d="m5.6 5.6 12.8 12.8" /></svg></span>
+        <p class="st-title">O modelo local não foi publicado neste servidor.</p>
         <p class="muted small">Quem publicou esta cópia do Giz não incluiu os arquivos do modelo. O modo online continua disponível.</p>
         <button class="btn sm" onclick={() => a.choose("online")}>Usar o modo online</button>
       {:else if a.local.state === "available" || a.local.state === "cached"}
+        <span class="st-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2.5" /><path d="M9.5 2.5v3.5M14.5 2.5v3.5M9.5 18v3.5M14.5 18v3.5M2.5 9.5H6M2.5 14.5H6M18 9.5h3.5M18 14.5h3.5" /></svg></span>
         <p>
           Um modelo de linguagem pequeno ({modelName}) roda na placa de vídeo deste aparelho.
           <strong>Suas perguntas e seus dados não saem do navegador.</strong>
@@ -130,13 +133,15 @@
           <button class="btn primary" onclick={() => a.loadLocal()}>Baixar o assistente ({size})</button>
         {/if}
       {:else if a.local.state === "loading"}
-        <p>Preparando o modelo… {Math.round(a.local.progress * 100)}%</p>
+        <span class="st-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11M7 10l5 5 5-5M4.5 20h15" /></svg></span>
+        <p class="st-title">Preparando o modelo… <span class="pct">{Math.round(a.local.progress * 100)}%</span></p>
         <progress value={a.local.progress} max="1" aria-label="Progresso do download do modelo"></progress>
         <p class="muted small status">{a.local.text}</p>
         <button class="btn sm" onclick={() => a.cancelLoad()}>Cancelar</button>
       {:else if a.local.state === "removing"}
-        <p class="muted"><span class="spinner"></span> Apagando o modelo…</p>
+        <p class="muted wait"><span class="spinner"></span> Apagando o modelo…</p>
       {:else if a.local.state === "error"}
+        <span class="st-icon danger" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 2.5 20h19Z" /><path d="M12 10v4.5M12 17.2v.3" /></svg></span>
         <p class="alert danger small" role="alert">{a.local.message}</p>
         <div class="row">
           <button class="btn sm" onclick={() => a.loadLocal()}>Tentar de novo</button>
@@ -148,23 +153,31 @@
   {:else if a.kind === "online" && !ready}
     <div class="setup">
       {#if a.online === "idle" || a.online === "checking"}
-        <p class="muted"><span class="spinner"></span> Conferindo o vgmelo.tech…</p>
+        <p class="muted wait"><span class="spinner"></span> Conferindo o vgmelo.tech…</p>
       {:else if a.online === "off"}
-        <p><strong>O assistente online está desligado agora.</strong></p>
+        <span class="st-icon warn" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><path d="m5.6 5.6 12.8 12.8" /></svg></span>
+        <p class="st-title">O assistente online está desligado agora.</p>
         <button class="btn sm" onclick={() => a.choose("local")}>Usar o assistente do navegador</button>
       {:else if a.online === "logged_out"}
-        <p><strong>O modo online pede login no vgmelo.tech</strong> (é grátis e tem cota diária).</p>
-        <div class="row">
-          <a class="btn sm primary" href={`${PORTAL}/entrar/`} target="_blank" rel="noopener">Entrar</a>
-          <button class="btn sm" onclick={() => a.checkOnline()}>Já entrei</button>
+        <span class="st-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5" /><path d="m11.2 11.8 8.3-8.3M16.5 6.5l2.5 2.5M14 9l2 2" /></svg></span>
+        <p class="st-title">O modo online pede login no vgmelo.tech</p>
+        <p class="muted">É grátis e tem cota diária.</p>
+        <div class="row stack">
+          <a class="btn primary" href={`${PORTAL}/entrar/`} target="_blank" rel="noopener">Entrar</a>
+          <button class="btn" onclick={() => a.checkOnline()}>Já entrei</button>
         </div>
       {:else if a.online === "error"}
+        <span class="st-icon danger" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 2.5 20h19Z" /><path d="M12 10v4.5M12 17.2v.3" /></svg></span>
         <p class="alert danger small" role="alert">{a.onlineError}</p>
         <button class="btn sm" onclick={() => a.checkOnline()}>Tentar de novo</button>
       {:else if a.online === "needs_consent" && a.provider}
         <div class="consent">
           {#if a.consentNote}<p class="alert warn small" role="alert">{a.consentNote}</p>{/if}
-          <p><strong>Antes de ligar o modo online</strong></p>
+          <div class="c-head">
+            <span class="st-icon sm" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18.5a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 18 8.5a4 4 0 0 1-.5 10Z" /></svg></span>
+            <p class="st-title">Antes de ligar o modo online</p>
+          </div>
+          <section class="box out-box">
           <p class="small">Neste modo, a cada pergunta <strong>saem do seu navegador</strong>:</p>
           <ul class="small">
             <li>o texto da pergunta e as últimas perguntas e respostas desta conversa;</li>
@@ -177,10 +190,13 @@
               você previu um lote, o resumo das previsões dele.
             </li>
           </ul>
+          </section>
+          <section class="box keep-box">
           <p class="small">
             <strong>Não saem</strong>: as linhas do arquivo, o nome do arquivo e das abas, mínimos e máximos, valores de
             exemplo, textos de erro.
           </p>
+          </section>
           <p class="small">
             Vai para o vgmelo.tech, que repassa a <strong>{a.provider.provider}</strong> (modelo
             <span class="mono">{a.provider.model}</span>). O que o provedor faz com o texto segue a política dele{#if a.provider.policy_url}
@@ -191,12 +207,14 @@
             <summary class="small">Ver exatamente o que sairia agora</summary>
             <pre class="ctx">{preview?.context}</pre>
           </details>
-          <label class="check small">
+          <div class="consent-foot">
+          <label class="check small agree" class:on={agreed}>
             <input type="checkbox" bind:checked={agreed} /> Li e concordo em enviar a pergunta e esse resumo
           </label>
           <div class="row">
-            <button class="btn primary sm" disabled={!agreed} onclick={agree}>Ligar o modo online</button>
-            <button class="btn ghost sm" onclick={() => a.choose("local")}>Ficar no navegador</button>
+            <button class="btn primary" disabled={!agreed} onclick={agree}>Ligar o modo online</button>
+            <button class="btn ghost" onclick={() => a.choose("local")}>Ficar no navegador</button>
+          </div>
           </div>
         </div>
       {/if}
@@ -204,10 +222,13 @@
   {:else}
     <div class="chat" bind:this={list} aria-live="polite">
       {#if a.messages.length === 0}
-        <p class="muted small hello">
+        <div class="hello">
+        <span class="st-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 5.5h15v10h-8l-4.5 3.5v-3.5h-2.5Z" /></svg></span>
+        <p class="muted small">
           Pergunte sobre o passo em que você está. Eu vejo um resumo ({STEP_NAMES[app.current].replace(/^\d de 7, /, "")}), não as
           linhas do arquivo.
         </p>
+        </div>
       {/if}
       {#each a.messages as m (m.id)}
         <div class="msg {m.role}">
@@ -270,6 +291,7 @@
 
     <form
       class="ask"
+      class:busy={a.generating}
       onsubmit={(e) => {
         e.preventDefault();
         void send();
@@ -339,14 +361,17 @@
   .assist {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
     min-height: 0;
     height: 100%;
     background: var(--panel);
     border: 1px solid var(--line);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    padding: 12px;
+    border-radius: 18px;
+    box-shadow: var(--shadow-lift, var(--shadow));
+    padding: 14px;
+  }
+  .assist:focus {
+    outline: none;
   }
   header {
     display: flex;
@@ -360,25 +385,62 @@
     gap: 8px;
     flex-wrap: wrap;
   }
+  .name {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--display);
+    font-size: 1.12rem;
+    letter-spacing: -0.01em;
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    background: var(--accent-fill);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-fill) 28%, transparent);
+  }
+  .close {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 999px;
+  }
+
+  /* onde roda: controle segmentado */
   .engines {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 6px;
+    gap: 4px;
+    padding: 4px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 14px;
   }
   .engines button {
-    border: 1px solid var(--line-2);
-    background: var(--panel-2);
-    border-radius: 9px;
-    padding: 6px 8px;
+    border: 0;
+    background: transparent;
+    border-radius: 10px;
+    padding: 7px 8px;
     font-weight: 600;
     font-size: 0.86rem;
     color: var(--muted);
     line-height: 1.2;
+    transition:
+      background 0.18s ease,
+      color 0.18s ease,
+      box-shadow 0.18s ease;
+  }
+  .engines button:hover:not(:disabled):not(.on) {
+    color: var(--ink);
   }
   .engines button.on {
-    border-color: var(--accent);
     color: var(--ink);
-    background: var(--accent-soft);
+    background: var(--panel);
+    box-shadow:
+      0 1px 2px rgb(0 0 0 / 0.12),
+      inset 0 -2px 0 var(--accent-fill);
   }
   .engines button:disabled {
     cursor: not-allowed;
@@ -390,17 +452,149 @@
     font-size: 0.72rem;
     color: var(--muted);
   }
-  .setup,
+
+  /* estados antes da conversa: ícone, título, texto e ações no centro */
+  .setup {
+    flex: 1;
+    display: grid;
+    gap: 10px;
+    align-content: start;
+    justify-items: center;
+    text-align: center;
+    overflow-y: auto;
+    padding-top: clamp(16px, 12vh, 120px) !important;
+    min-height: 0;
+    font-size: 0.92rem;
+    padding: 8px 6px;
+    animation: rise 0.28s var(--ease-out, ease-out) both;
+  }
+  .setup > p {
+    margin: 0;
+    max-width: 34ch;
+  }
+  .st-icon {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    margin-bottom: 2px;
+  }
+  .st-icon.warn {
+    background: color-mix(in srgb, var(--warn) 14%, transparent);
+    color: var(--warn);
+  }
+  .st-icon.danger {
+    background: color-mix(in srgb, var(--danger) 14%, transparent);
+    color: var(--danger);
+  }
+  .st-icon.sm {
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
+    margin: 0;
+  }
+  .st-title {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 650;
+    font-size: 1.06rem;
+    line-height: 1.3;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .pct {
+    font-variant-numeric: tabular-nums;
+    color: var(--accent);
+  }
+  .wait {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+  .row.stack {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: min(100%, 300px);
+    margin-top: 4px;
+  }
+  .row.stack .btn {
+    justify-content: center;
+  }
+  .setup .alert {
+    text-align: left;
+    width: 100%;
+  }
+  progress {
+    appearance: none;
+    width: min(100%, 300px);
+    height: 10px;
+    border: 0;
+    border-radius: 999px;
+    overflow: hidden;
+    background: var(--panel-2);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  progress::-webkit-progress-bar {
+    background: var(--panel-2);
+    border-radius: 999px;
+  }
+  progress::-webkit-progress-value {
+    background: var(--accent-fill);
+    border-radius: 999px;
+    transition: width 0.3s ease;
+  }
+  progress::-moz-progress-bar {
+    background: var(--accent-fill);
+    border-radius: 999px;
+  }
+  .status {
+    overflow-wrap: anywhere;
+    min-height: 2.4em;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+  }
+
+  /* consentimento: o que sai e o que fica, em caixas separadas */
   .consent {
     display: grid;
     gap: 10px;
     align-content: start;
-    overflow-y: auto;
-    min-height: 0;
+    justify-items: stretch;
+    text-align: left;
+    width: 100%;
   }
-  .setup {
-    flex: 1;
-    font-size: 0.92rem;
+  .setup:has(.consent) {
+    align-content: start;
+    padding-top: 8px !important;
+  }
+  .c-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .box {
+    display: grid;
+    gap: 6px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: var(--panel-2);
+    border-left: 3px solid var(--warn);
+  }
+  .box p {
+    margin: 0;
+  }
+  .keep-box {
+    border-left-color: var(--good);
   }
   .consent ul {
     margin: 0;
@@ -408,62 +602,115 @@
     display: grid;
     gap: 4px;
   }
-  .row {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    align-items: center;
+  .consent details {
+    font-size: 0.9rem;
   }
-  progress {
-    width: 100%;
-    height: 8px;
+  .consent summary {
+    cursor: pointer;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .agree {
+    padding: 10px 12px;
+    border: 1px solid var(--line-2);
+    border-radius: 12px;
+    cursor: pointer;
+    transition:
+      border-color 0.18s ease,
+      background 0.18s ease;
+  }
+  .agree.on {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .agree input {
     accent-color: var(--accent);
+    margin-top: 2px;
   }
-  .status {
-    overflow-wrap: anywhere;
-    min-height: 2.4em;
+  .consent .row {
+    justify-content: flex-start;
   }
+  /* concordar e ligar ficam sempre à vista, mesmo com o texto rolando (celular) */
+  .consent-foot {
+    position: sticky;
+    bottom: -8px;
+    display: grid;
+    gap: 10px;
+    padding: 10px 0 8px;
+    background: var(--panel);
+  }
+  .consent-foot::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -28px;
+    height: 28px;
+    background: linear-gradient(transparent, var(--panel));
+    pointer-events: none;
+  }
+
+  /* conversa */
   .chat {
     flex: 1;
     min-height: 120px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding-right: 2px;
+    gap: 10px;
+    padding: 2px 2px 2px 0;
   }
   .hello {
     margin: auto 0;
+    display: grid;
+    justify-items: center;
+    gap: 8px;
     text-align: center;
+    padding: 12px;
+  }
+  .hello p {
+    margin: 0;
+    max-width: 32ch;
   }
   .msg {
-    max-width: 94%;
-    padding: 8px 10px;
-    border-radius: 10px;
+    max-width: 92%;
+    padding: 9px 12px;
+    border-radius: 14px;
     font-size: 0.9rem;
-    line-height: 1.45;
+    line-height: 1.5;
     overflow-wrap: anywhere;
     display: grid;
     gap: 6px;
+    animation: rise 0.22s var(--ease-out, ease-out) both;
+  }
+  .msg p {
+    margin: 0;
   }
   .msg.user {
     align-self: flex-end;
-    background: var(--accent-soft);
+    background: var(--accent-fill);
+    color: var(--accent-ink);
+    border-bottom-right-radius: 4px;
   }
   .msg.assistant {
     align-self: flex-start;
     background: var(--panel-2);
     border: 1px solid var(--line);
+    border-bottom-left-radius: 4px;
   }
   .li {
     padding-left: 14px;
     position: relative;
   }
   .li::before {
-    content: "•";
+    content: "";
     position: absolute;
     left: 2px;
-    color: var(--muted);
+    top: 0.62em;
+    width: 5px;
+    height: 5px;
+    border-radius: 2px;
+    background: var(--accent);
   }
   .actions {
     display: grid;
@@ -474,6 +721,10 @@
     text-align: left;
     white-space: normal;
     border-color: var(--accent);
+  }
+  .sug {
+    border-top: 1px dashed var(--line-2);
+    padding-top: 8px;
   }
   .sug summary {
     cursor: pointer;
@@ -494,6 +745,13 @@
     cursor: pointer;
     white-space: normal;
     text-align: left;
+    transition:
+      border-color 0.15s ease,
+      transform 0.15s ease;
+  }
+  .q:hover:not(:disabled) {
+    border-color: var(--accent);
+    transform: translateY(-1px);
   }
   .q:disabled {
     opacity: 0.5;
@@ -502,28 +760,50 @@
   .ask {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    gap: 8px;
+    gap: 6px;
     align-items: end;
+    padding: 6px;
+    border: 1px solid var(--line-2);
+    border-radius: 16px;
+    background: var(--panel);
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+  .ask:focus-within {
+    border-color: var(--accent);
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
   textarea {
     resize: none;
-    border: 1px solid var(--line-2);
-    background: var(--panel);
-    border-radius: 8px;
-    padding: 7px 10px;
+    border: 0;
+    background: transparent;
+    border-radius: 10px;
+    padding: 6px 8px;
     min-width: 0;
     width: 100%;
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.92rem;
+  }
+  textarea:focus,
+  textarea:focus-visible {
+    outline: none;
   }
   .foot {
     display: grid;
     gap: 4px;
+  }
+  .foot p {
+    margin: 0;
   }
   .out {
     color: var(--warn);
   }
   .check {
     display: flex;
-    gap: 6px;
+    gap: 8px;
     align-items: flex-start;
   }
   .link {
@@ -532,6 +812,7 @@
     padding: 0;
     color: var(--accent);
     text-decoration: underline;
+    text-underline-offset: 2px;
     font-size: inherit;
   }
   .link:disabled {
@@ -544,15 +825,22 @@
     overflow: auto;
     background: var(--panel-2);
     border: 1px solid var(--line);
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 8px;
     font-family: var(--mono);
     font-size: 0.72rem;
     white-space: pre-wrap;
     overflow-wrap: anywhere;
     color: var(--ink);
+    text-align: left;
   }
   .alert.small {
     padding: 6px 10px;
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
   }
 </style>

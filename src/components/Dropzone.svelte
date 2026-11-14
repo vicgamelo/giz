@@ -42,8 +42,10 @@
   ondragleave={() => (over = false)}
   ondrop={drop}
 >
-  <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"
-    ><path d="M12 16V4m0 0l-4 4m4-4l4 4M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3" /></svg
+  <span class="icon"
+    ><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"
+      ><path d="M12 16V4m0 0l-4 4m4-4l4 4M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3" /></svg
+    ></span
   >
   <strong>{title}</strong>
   <span class="muted small">{hint}</span>
@@ -67,24 +69,47 @@
     display: grid;
     justify-items: center;
     gap: 6px;
-    padding: 34px 20px;
+    padding: 40px 20px;
     border: 2px dashed var(--line-2);
-    border-radius: var(--radius);
+    border-radius: 12px;
     background: var(--panel-2);
     color: var(--ink);
+    font-size: 1.05rem;
     transition:
-      border-color 0.15s,
-      background 0.15s;
+      border-color 0.2s,
+      background 0.2s;
+  }
+  .icon {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    margin-bottom: 6px;
+    border-radius: 50%;
+    background: var(--accent-fill);
+    color: var(--accent-ink);
+    transition: transform 0.35s var(--ease-out);
   }
   .zone:hover:not(:disabled),
   .zone.over {
     border-color: var(--accent);
-    background: color-mix(in srgb, var(--accent-soft) 45%, var(--panel-2));
+    background: color-mix(in srgb, var(--accent-soft) 40%, var(--panel-2));
+  }
+  .zone:hover:not(:disabled) .icon,
+  .zone.over .icon {
+    transform: translateY(-4px);
+  }
+  .zone:disabled {
+    cursor: wait;
+  }
+  .zone:disabled .icon {
+    background: var(--line);
+    color: var(--muted);
   }
   svg path {
     fill: none;
-    stroke: var(--accent);
-    stroke-width: 1.8;
+    stroke: currentColor;
+    stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
   }

@@ -6,6 +6,7 @@
   import type { Problem } from "../lib/types";
   import Alerts from "./Alerts.svelte";
   import HBars from "./HBars.svelte";
+  import { tip } from "../lib/tip";
 
   const cols = $derived(app.profile?.columns ?? []);
   const info = $derived(app.targetInfo);
@@ -219,7 +220,13 @@
                 .join(" · ")}
             </span>
           </div>
-          <div class="track-bar">
+          <div
+            class="track-bar"
+            use:tip={() =>
+              c.folds.length
+                ? `${c.label}\n${c.folds.map((f, k) => `fold ${k + 1}: ${fmtMetric(metric, f)}`).join("\n")}`
+                : c.label}
+          >
             {#if s != null}
               <div class="fill" style:width="{Math.max(pos(s), 1)}%"></div>
             {/if}
@@ -238,14 +245,13 @@
       {/each}
     </ol>
     {#if app.result && !app.training}
-      <div class="done">
+      <div class="winner">
         {#if app.result.stopped}<span class="chip warn">parado</span>{/if}
-        Vencedor: <strong>{app.result.best.label}</strong> com {metricLabel(metric)}
-        <strong>{fmtMetric(metric, app.result.best.score)}</strong> na validação cruzada
+        Vencedor: <strong>{app.result.best.label}</strong>
+        <span class="nw">com {metricLabel(metric)} <strong>{fmtMetric(metric, app.result.best.score)}</strong></span> na validação cruzada
         {#if app.result.baseline?.score != null}
           (referência: {fmtMetric(metric, app.result.baseline.score)})
         {/if}.
-        <button class="btn primary sm" onclick={() => (app.current = "evaluate")}>Ver avaliação →</button>
       </div>
     {/if}
   </div>
@@ -295,14 +301,17 @@
     justify-content: space-between;
     gap: 6px;
     padding: 0 10px;
-    background: var(--accent-soft);
-    color: var(--accent);
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    color: var(--ink);
     font-size: 0.82rem;
     min-width: 70px;
     flex-basis: 0;
+    border-radius: 6px;
   }
   .seg:last-child {
-    background: var(--accent);
+    background: var(--accent-fill);
+    border-color: var(--accent-fill);
     color: var(--accent-ink);
   }
   .talerts {
@@ -343,20 +352,30 @@
     padding: 0;
     margin: 0;
     display: grid;
-    gap: 6px;
+    gap: 2px;
   }
+  /* Linhas baixas, sem caixa; o líder ganha faixa de giz */
   .board li {
     display: grid;
-    grid-template-columns: 28px minmax(150px, 230px) minmax(0, 1fr) 110px;
+    grid-template-columns: 28px minmax(220px, 380px) minmax(0, 1fr) 120px;
     align-items: center;
     gap: 12px;
-    padding: 8px 12px;
-    border: 1px solid var(--line);
+    padding: 6px 12px;
+    border: 1px solid transparent;
     border-radius: 10px;
-    background: var(--panel-2);
+    transition:
+      background 0.3s,
+      border-color 0.3s;
+  }
+  .board li:nth-child(even):not(.leader) {
+    background: color-mix(in srgb, var(--panel-2) 70%, transparent);
   }
   .board li.running {
     border-color: var(--accent);
+    background: var(--panel-2);
+  }
+  .board li.running .fill {
+    animation: pulse 1.2s ease-in-out infinite;
   }
   .board li.pending,
   .board li.skipped,
@@ -364,29 +383,56 @@
     opacity: 0.55;
   }
   .board li.leader {
+    padding-top: 10px;
+    padding-bottom: 10px;
     border-color: var(--accent);
-    background: color-mix(in srgb, var(--accent-soft) 60%, var(--panel-2));
+    background: color-mix(in srgb, var(--accent-soft) 70%, var(--panel));
   }
   .rank {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
     font-weight: 700;
+    font-size: 0.85rem;
     color: var(--muted);
-    text-align: center;
   }
   .leader .rank {
-    color: var(--accent);
+    background: var(--accent-fill);
+    color: var(--accent-ink);
   }
+  .leader .name strong {
+    font-size: 1.02rem;
+  }
+  .leader .score {
+    font-family: var(--mono);
+    font-size: 1.15rem;
+  }
+  /* nome e estado na mesma linha: linhas de ranking baixas, como uma tabela de console */
   .name {
-    display: grid;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    min-width: 0;
+  }
+  .name .small {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1 1 auto;
     min-width: 0;
   }
   .name strong {
+    flex: 0 1 auto;
+    min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
   .track-bar {
     position: relative;
-    height: 12px;
+    height: 10px;
     background: var(--line);
     border-radius: 6px;
   }
@@ -394,7 +440,7 @@
     height: 100%;
     border-radius: 6px;
     background: var(--bar-2);
-    transition: width 0.4s ease;
+    transition: width 0.5s var(--ease-out);
   }
   .leader .fill,
   .done .fill {
@@ -402,6 +448,9 @@
   }
   li:not(.baseline-row) .fill {
     background: color-mix(in srgb, var(--bar) 70%, var(--bar-2));
+  }
+  .board li.leader .fill {
+    background: var(--accent-fill);
   }
   .foldpt {
     position: absolute;
@@ -414,15 +463,22 @@
     opacity: 0.55;
   }
   .score {
+    font-family: var(--mono);
     text-align: right;
     font-weight: 700;
+    font-variant-numeric: tabular-nums;
   }
   .score small {
     font-weight: 400;
     color: var(--muted);
   }
-  .done {
+  .nw {
+    white-space: nowrap;
+  }
+  .winner {
     margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
     display: flex;
     gap: 6px;
     align-items: center;
@@ -433,7 +489,22 @@
       grid-template-columns: minmax(0, 1fr);
     }
     .board li {
-      grid-template-columns: 22px minmax(0, 1fr) 80px;
+      grid-template-columns: 22px minmax(0, 1fr) 84px;
+      padding-right: 10px;
+    }
+    /* o ± vai para a linha de baixo, para o placar não encostar na borda */
+    .score small {
+      display: block;
+    }
+    /* no celular o nome ganha a linha toda e o estado vai embaixo */
+    .name {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+    }
+    .name strong {
+      white-space: normal;
+      overflow: visible;
     }
     .track-bar {
       grid-column: 2 / 4;

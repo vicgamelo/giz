@@ -1,86 +1,115 @@
+/* Console de ML: neutros frios, azul de ação e barra do console escura (inspirado no SageMaker). */
 :root {
-  --bg: #f4f6f8;
+  --bg: #f3f5f8;
   --panel: #ffffff;
-  --panel-2: #f8fafc;
-  --ink: #0f172a;
-  --muted: #5b6b80;
-  --line: #e2e8f0;
-  --line-2: #cbd5e1;
-  --accent: #0f766e;
+  --panel-2: #f7f9fb;
+  --ink: #0f1722;
+  --muted: #566272;
+  --line: #e1e6ec;
+  --line-2: #c8d0da;
+  /* Acento de texto/borda/foco e preenchimento de ação (azul), com tinta branca. */
+  --accent: #1a5fc9;
+  --accent-fill: #1f66d6;
   --accent-ink: #ffffff;
-  --accent-soft: #ccfbf1;
-  --accent-2: #14b8a6;
-  --chalk: #12352f;
-  --warn: #b45309;
-  --warn-soft: #fef3c7;
-  --danger: #b91c1c;
-  --danger-soft: #fee2e2;
-  --info-soft: #e0f2fe;
-  --info: #0369a1;
-  --good: #15803d;
-  --bar: #0f766e;
-  --bar-2: #94a3b8;
-  --neg: #2563eb;
-  --pos: #ea580c;
-  --shadow: 0 1px 2px rgb(15 23 42 / 6%), 0 4px 16px rgb(15 23 42 / 5%);
+  --accent-soft: #e8f0fc;
+  --accent-2: #1a5fc9;
+  --chalk: #0f1b2a;
+  --warn: #9a4b00;
+  --warn-soft: #fdf0dd;
+  --danger: #c0281b;
+  --danger-soft: #fde7e4;
+  --info-soft: #e6f2fb;
+  --info: #0b6aa8;
+  --good: #1b7f4c;
+  --bar: #1f66d6;
+  --bar-2: #c3ccd8;
+  --neg: #2a6fdb;
+  --pos: #e0662a;
+  --c3: #7b5cd6;
+  --console: #0f1b2a;
+  --console-ink: #eef3f8;
+  --console-muted: #9fb0c3;
+  --console-line: #2a3b50;
+  --console-good: #6fdca0;
+  --console-warn: #f7b56b;
+  --console-danger: #ff9187;
+  --console-focus: #7fb3ff;
+  --shadow: 0 1px 2px rgb(15 27 42 / 6%), 0 1px 3px rgb(15 27 42 / 4%);
+  --shadow-lift: 0 2px 6px rgb(15 27 42 / 8%), 0 18px 40px -18px rgb(15 27 42 / 28%);
   --radius: 12px;
-  --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  --radius-sm: 8px;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --display: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "JetBrains Mono Variable", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0a101c;
-    --panel: #111a2a;
-    --panel-2: #0e1624;
-    --ink: #e6ebf2;
-    --muted: #94a3b8;
-    --line: #1e2a3d;
-    --line-2: #2b3a52;
-    --accent: #2dd4bf;
-    --accent-ink: #042f2a;
-    --accent-soft: #0f3d38;
-    --chalk: #0c2a25;
-    --warn: #fbbf24;
-    --warn-soft: #3a2a08;
-    --danger: #f87171;
-    --danger-soft: #3b1214;
-    --info-soft: #0c2a3d;
-    --info: #7dd3fc;
-    --good: #4ade80;
-    --bar: #2dd4bf;
-    --bar-2: #475569;
-    --neg: #60a5fa;
-    --pos: #fb923c;
-    --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 6px 20px rgb(0 0 0 / 25%);
+    --bg: #0b121c;
+    --panel: #141e2b;
+    --panel-2: #101925;
+    --ink: #e8eef5;
+    --muted: #9aa8b8;
+    --line: #233245;
+    --line-2: #34465c;
+    --accent: #7cb1ff;
+    --accent-fill: #5b9cf6;
+    --accent-ink: #07111d;
+    --accent-soft: #172d4b;
+    --accent-2: #7cb1ff;
+    --chalk: #070c13;
+    --warn: #f5a35c;
+    --warn-soft: #3a2914;
+    --danger: #ff8b80;
+    --danger-soft: #3d1c1a;
+    --info-soft: #12304a;
+    --info: #7cc4f0;
+    --good: #5fd39a;
+    --bar: #6ea8ff;
+    --bar-2: #2f4157;
+    --neg: #6ea8ff;
+    --pos: #f59a5b;
+    --c3: #b39cff;
+    --console: #070c13;
+    --console-line: #1f2d3f;
+    --shadow: 0 1px 0 rgb(255 255 255 / 3%) inset, 0 1px 3px rgb(0 0 0 / 40%);
+    --shadow-lift: 0 1px 0 rgb(255 255 255 / 4%) inset, 0 24px 48px -20px rgb(0 0 0 / 80%);
     color-scheme: dark;
   }
 }
 
 :root[data-theme="dark"] {
-  --bg: #0a101c;
-  --panel: #111a2a;
-  --panel-2: #0e1624;
-  --ink: #e6ebf2;
-  --muted: #94a3b8;
-  --line: #1e2a3d;
-  --line-2: #2b3a52;
-  --accent: #2dd4bf;
-  --accent-ink: #042f2a;
-  --accent-soft: #0f3d38;
-  --chalk: #0c2a25;
-  --warn: #fbbf24;
-  --warn-soft: #3a2a08;
-  --danger: #f87171;
-  --danger-soft: #3b1214;
-  --info-soft: #0c2a3d;
-  --info: #7dd3fc;
-  --good: #4ade80;
-  --bar: #2dd4bf;
-  --bar-2: #475569;
-  --neg: #60a5fa;
-  --pos: #fb923c;
-  --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 6px 20px rgb(0 0 0 / 25%);
+  --bg: #0b121c;
+  --panel: #141e2b;
+  --panel-2: #101925;
+  --ink: #e8eef5;
+  --muted: #9aa8b8;
+  --line: #233245;
+  --line-2: #34465c;
+  --accent: #7cb1ff;
+  --accent-fill: #5b9cf6;
+  --accent-ink: #07111d;
+  --accent-soft: #172d4b;
+  --accent-2: #7cb1ff;
+  --chalk: #070c13;
+  --warn: #f5a35c;
+  --warn-soft: #3a2914;
+  --danger: #ff8b80;
+  --danger-soft: #3d1c1a;
+  --info-soft: #12304a;
+  --info: #7cc4f0;
+  --good: #5fd39a;
+  --bar: #6ea8ff;
+  --bar-2: #2f4157;
+  --neg: #6ea8ff;
+  --pos: #f59a5b;
+  --c3: #b39cff;
+  --console: #070c13;
+  --console-line: #1f2d3f;
+  --shadow: 0 1px 0 rgb(255 255 255 / 3%) inset, 0 1px 3px rgb(0 0 0 / 40%);
+  --shadow-lift: 0 1px 0 rgb(255 255 255 / 4%) inset, 0 24px 48px -20px rgb(0 0 0 / 80%);
   color-scheme: dark;
 }
 
@@ -93,15 +122,8 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font:
-    15px/1.5 ui-sans-serif,
-    system-ui,
-    -apple-system,
-    "Segoe UI",
-    Roboto,
-    "Helvetica Neue",
-    Arial,
-    sans-serif;
+  font: 15px/1.55 var(--sans);
+  font-feature-settings: "cv11", "ss01";
   -webkit-font-smoothing: antialiased;
 }
 
@@ -114,8 +136,16 @@ h4 {
   letter-spacing: -0.01em;
 }
 
+h1,
 h2 {
-  font-size: 1.35rem;
+  font-family: var(--display);
+  font-weight: 720;
+  letter-spacing: -0.022em;
+}
+
+h2 {
+  font-size: 1.6rem;
+  line-height: 1.15;
 }
 
 h3 {
@@ -145,6 +175,7 @@ button {
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+  border-radius: 4px;
 }
 
 .muted {
@@ -164,12 +195,33 @@ button {
   font-variant-numeric: tabular-nums;
 }
 
+/* Contêiner de console: cabeçalho com fio embaixo, corpo com respiro. */
 .panel {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 18px;
+  padding: 20px;
+}
+
+.panel > .panel-head:first-child {
+  margin: -20px -20px 18px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--line);
+  align-items: center;
+}
+
+.panel > h3:first-child {
+  margin: -20px -20px 16px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--line);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.panel-head h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
 }
 
 .panel + .panel {
@@ -189,25 +241,26 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border: 1px solid var(--line-2);
+  border: 1.5px solid var(--accent);
   background: var(--panel);
-  border-radius: 9px;
-  padding: 8px 14px;
-  font-weight: 550;
+  border-radius: 999px;
+  padding: 7px 18px;
+  font-weight: 700;
   transition:
     background 0.15s,
     border-color 0.15s,
-    transform 0.05s;
+    box-shadow 0.2s,
+    transform 0.12s var(--ease-out);
   text-decoration: none;
-  color: var(--ink);
+  color: var(--accent);
 }
 
 .btn:hover:not(:disabled) {
-  border-color: var(--accent);
+  background: var(--accent-soft);
 }
 
 .btn:active:not(:disabled) {
-  transform: translateY(1px);
+  transform: translateY(1px) scale(0.98);
 }
 
 .btn:disabled {
@@ -215,19 +268,29 @@ button {
   cursor: not-allowed;
 }
 
+/* primário desabilitado: superfície neutra com texto legível, em vez de azul apagado */
+.btn.primary:disabled {
+  opacity: 1;
+  background: var(--panel-2);
+  border-color: var(--line-2);
+  color: var(--muted);
+}
+
 .btn.primary {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--accent-fill);
+  border-color: var(--accent-fill);
   color: var(--accent-ink);
 }
 
 .btn.primary:hover:not(:disabled) {
-  filter: brightness(1.08);
+  background: color-mix(in srgb, var(--accent-fill) 88%, var(--ink));
+  border-color: color-mix(in srgb, var(--accent-fill) 88%, var(--ink));
 }
 
 .btn.ghost {
   border-color: transparent;
   background: transparent;
+  color: var(--ink);
 }
 
 .btn.ghost:hover:not(:disabled) {
@@ -236,13 +299,13 @@ button {
 }
 
 .btn.sm {
-  padding: 4px 10px;
+  padding: 3px 12px;
   font-size: 0.85rem;
-  border-radius: 7px;
 }
 
 .btn.danger {
   color: var(--danger);
+  border-color: var(--danger);
 }
 
 .chip {
@@ -294,22 +357,31 @@ button {
   gap: 12px;
 }
 
+/* KPI no formato chave-valor: rótulo em cima, número grande embaixo. */
 .kpi {
-  background: var(--panel-2);
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  gap: 2px;
+  background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  box-shadow: var(--shadow);
 }
 
 .kpi .v {
-  font-size: 1.45rem;
-  font-weight: 700;
+  font-family: var(--mono);
+  font-size: 1.7rem;
+  line-height: 1.15;
+  font-weight: 720;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
 }
 
 .kpi .l {
   font-size: 0.8rem;
+  font-weight: 600;
   color: var(--muted);
 }
 
@@ -329,13 +401,18 @@ input[type="text"],
 input[type="number"] {
   border: 1px solid var(--line-2);
   background: var(--panel);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 7px 10px;
   min-width: 0;
 }
 
+select:focus-visible,
+input:focus-visible {
+  border-color: var(--accent);
+}
+
 input[type="range"] {
-  accent-color: var(--accent);
+  accent-color: var(--accent-fill);
   width: 100%;
 }
 
@@ -372,8 +449,15 @@ table.data th {
   position: sticky;
   top: 0;
   background: var(--panel-2);
-  font-weight: 650;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--muted);
+  border-bottom: 2px solid var(--line-2);
   z-index: 1;
+}
+
+table.data tbody tr:hover td {
+  background: color-mix(in srgb, var(--accent-soft) 45%, transparent);
 }
 
 table.data td.n {
@@ -469,9 +553,16 @@ table.data tr.selected td {
 .c-na {
   fill: var(--panel-2);
 }
+/* |r| ≤ 0,1: cinza com borda, para não sumir no fundo do painel (sobretudo no escuro) */
 .c-p0,
 .c-n0 {
-  fill: color-mix(in srgb, var(--panel-2) 100%, var(--pos));
+  fill: color-mix(in srgb, var(--line) 70%, var(--panel-2));
+  stroke: var(--line-2);
+  stroke-width: 0.75;
+}
+.c-na {
+  stroke: var(--line);
+  stroke-width: 0.75;
 }
 .c-p1 {
   fill: color-mix(in srgb, var(--pos) 18%, var(--panel-2));
@@ -507,6 +598,7 @@ table.data tr.selected td {
 svg text {
   fill: var(--muted);
   font-size: 11px;
+  font-variant-numeric: tabular-nums;
 }
 
 .sr-only {
@@ -530,4 +622,43 @@ pre.code {
   max-height: 460px;
   margin: 0;
   white-space: pre;
+}
+
+/* Troca de passo: o conteúdo entra subindo de leve (CSS puro; a CSP não deixa estilo inline). */
+.step-in {
+  animation: step-in 0.4s var(--ease-out) both;
+}
+
+@keyframes step-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Balão das dicas dos gráficos (src/lib/tip.ts) */
+.giz-tip {
+  position: fixed;
+  z-index: 60;
+  max-width: 280px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--console);
+  color: var(--console-ink);
+  font-size: 0.8rem;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+  white-space: pre-line;
+  pointer-events: none;
+  box-shadow: var(--shadow-lift);
 }
